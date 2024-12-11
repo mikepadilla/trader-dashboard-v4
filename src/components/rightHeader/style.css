@@ -1,0 +1,154 @@
+
+.content{
+	overflow-y: auto;
+	width: 66%;
+	display: flex; 
+	flex-direction: column;
+	flex: 1;
+}
+
+.content__tabs{
+	min-height: 300px;
+	display: flex;
+	border-top: 1px solid var(--border-color);
+}
+
+.summary__tab{
+	width: 54.3%;
+}
+.articles__tab{
+	width: 45.7%;
+}
+
+.summary__tab .tabs__contents{
+	height: calc(100% - 40px);
+	overflow-y: auto;
+	border-right: 1px solid var(--border-color);
+}
+
+.articles__tab .tabs__contents{
+	height: calc(100% - 40px);
+	overflow-y: auto;
+}
+
+.summary__tab .tab__content{
+	padding: 0px 20px;
+}
+
+.summary__tab .tab__content.tab__content_active{
+	padding: 11px 20px;
+}
+
+.articles__tab .tab__content{
+	padding: 0px 36px;
+}
+
+.articles__tab .tab__content.tab__content_active{
+	padding: 19px 36px;
+}
+
+
+.articles__tab-content{
+	display: grid;
+	grid-template-columns: repeat(2, minmax(280px, 150px));
+	justify-content: space-between;
+}
+
+.articles__tab-title{
+	font-size: 12px;
+	line-height: 18px;
+	color: var(--text-second-color);
+}
+
+.articles__tab-description{
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 8px;
+	font-size: 12px;
+	line-height: 18px;
+	color: var(--text-gray-color);
+}
+
+.articles__tab-description .bold{
+	font-size: 14px;
+}
+
+.tab__content-title{
+	font-family: var(--text-gray-color);
+	font-weight: 700;
+	font-size: 14px;
+}
+
+.tab__content-title:not(:first-child){
+	margin-top: 18px;
+}
+
+.tab__content-description{
+	margin-top: 3px;
+	font-size: 14px;
+	line-height: 18px;
+	color: var(--text-gray-color);
+}
+
+/* content header */
+.content__header{
+	flex-shrink: 0;
+	border-bottom: 1px solid var(--border-color);
+}
+
+.content__header-list{
+	display: flex;
+	align-items: center;
+	gap: 28px;
+	height: 40px;
+	padding: 5px 8px;
+	text-wrap: nowrap;
+}
+
+.content__header-title{
+	font-size: 12px;
+	color: var(--text-second-color);
+}
+
+.content__header-value{
+	font-size: 12px;
+	font-family: var(--secondary-font);
+}
+
+
+
+@media (max-width: 1600px) {
+	.content__header-list{
+		gap: 8px;
+		justify-content: space-between;
+	}
+	.articles__tab-content{
+		grid-template-columns: 1fr;
+	}
+	.articles__tab-item:not(:first-child){
+		margin-top: 20px;
+	}
+}
+
+#portfolio-summary{
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--text-gray-color);
+}
+
+@media (max-width: 1440px) {
+	.content__header{
+		width: 100%;
+		overflow-y: auto;
+	}
+	.content__header-list{
+		width: 900px;
+	}
+}
+
+@media (max-width: 1200px) {
+	.content{
+		width: calc(100% - 400px);
+	}
+}

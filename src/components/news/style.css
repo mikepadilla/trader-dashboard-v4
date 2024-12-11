@@ -1,0 +1,8 @@
+.my-masonry-grid {
+  display: flex;
+  gap: 16px;
+}
+
+.my-masonry-grid_column {
+  background-clip: padding-box;
+}
