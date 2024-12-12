@@ -1,7 +1,6 @@
 import {
   CategoryScale,
   Chart as ChartJS,
-  ElementChartOptions,
   Legend,
   LinearScale,
   LineElement,
@@ -15,8 +14,7 @@ import { Line } from "react-chartjs-2";
 import {
   backgroundTicks,
   drawEvents,
-  drawTickText,
-  hoverLine,
+  hoverLine
 } from "./customChartPlugins";
 import "./style.css";
 
@@ -181,9 +179,7 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
     },
   };
 
-
-
-  const plugins = [hoverLine(), backgroundTicks(), drawTickText()];
+  const plugins = [hoverLine(), backgroundTicks() ];
 
   if (events) {
     plugins.push(drawEvents());

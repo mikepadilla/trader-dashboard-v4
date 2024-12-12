@@ -74,8 +74,8 @@ const ContentRight = () => {
               content:
                 chartType == "cumulative" ? (
                   <LineChart
-                    min={findMinMax(marketChartData, activeTableRow == 'top-portfolio'? 'total' : "balance")[0]}
-                    max={findMinMax(marketChartData, activeTableRow == 'top-portfolio'? 'total' : "balance")[1]}
+                    min={marketChartData != undefined ? findMinMax(marketChartData, activeTableRow == 'top-portfolio'? 'total' : "balance")[0] : 0}
+                    max={marketChartData != undefined ? findMinMax(marketChartData, activeTableRow == 'top-portfolio'? 'total' : "balance")[1] : 10}
                     chartDataProp={marketChartData}
                     yKey={activeTableRow == 'top-portfolio'? 'total' : "balance"}
 										events={false}
@@ -94,10 +94,10 @@ const ContentRight = () => {
                 chartType == "cumulative" ? (
                   <LineChart
                     min={
-                      findMinMax(performanceChartData, "total performance")[0]
+                      performanceChartData != undefined ? findMinMax(performanceChartData, "total performance")[0] : 0
                     }
                     max={
-                      findMinMax(performanceChartData, "total performance")[1]
+                      performanceChartData != undefined ? findMinMax(performanceChartData, "total performance")[1] : 10
                     }
                     chartDataProp={performanceChartData}
                     yKey={"total performance"}
@@ -116,8 +116,8 @@ const ContentRight = () => {
               content:
                 chartType == "cumulative" ? (
                   <LineChart
-                    min={findMinMax(basisChartData, "total cost basis")[0]}
-                    max={findMinMax(basisChartData, "total cost basis")[1]}
+                    min={basisChartData != undefined ? findMinMax(basisChartData, "total cost basis")[0] : 0}
+                    max={basisChartData != undefined ? findMinMax(basisChartData, "total cost basis")[1] : 10}
                     chartDataProp={basisChartData}
                     yKey={"total cost basis"}
                     events={true}

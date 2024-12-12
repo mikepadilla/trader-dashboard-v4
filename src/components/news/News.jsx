@@ -25,7 +25,6 @@ const News = () => {
 		getPortfolioNews().then(res => {
 			setNewPortfolio(res.summary)
 			setNewsPortfolioLoading(false)
-			console.log(res)
 		})
 	}, [])
 

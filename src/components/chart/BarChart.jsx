@@ -16,13 +16,13 @@ import { Bar } from "react-chartjs-2";
 
 
 import useTableStore from '../../zustand/store';
-import { backgroundTicks, drawEvents, drawTickText, hoverLine } from './customChartPlugins';
+import { backgroundTicks, drawEvents, hoverLine } from './customChartPlugins';
 import './style.css';
 
 const BarChart = ({chartDataProp, yKey, events }) => {
 
-	const [activeLineY, setActiveLineY] = useState<number | null>(null)
-	const [activeLineYVal, setActiveLineYVal] = useState<number | null>(null)
+	const [activeLineY, setActiveLineY] = useState(null)
+	const [activeLineYVal, setActiveLineYVal] = useState(null)
 	const [colors, setColor] = useState([])
 
 	const {chartType} = useTableStore()
@@ -188,11 +188,6 @@ const BarChart = ({chartDataProp, yKey, events }) => {
 					color: "transparent",
 				},
 				type: "linear",
-				// adapters: {
-				//   date: {
-				//     locale: enUS,
-				//   },
-				// },
 				position: "bottom",
 				border: {
 					display: false,
@@ -220,12 +215,6 @@ const BarChart = ({chartDataProp, yKey, events }) => {
 				ticks: {
 					color: "#146EB0",
 					callback: (value) => {
-						// if (this.yTicksType == 'market') {
-						// 	return value.toFixed(2);
-						// }
-						// if (this.yTicksType == 'performance') {
-						// 	return Math.floor(value) + '%'
-						// }
 						return Math.floor(value)
 					},
 					font: {
@@ -244,7 +233,6 @@ const BarChart = ({chartDataProp, yKey, events }) => {
 	const plugins = [
 		hoverLine(),
 		backgroundTicks(),
-		drawTickText(),
 	]
 
 	if (events) {

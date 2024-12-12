@@ -52,8 +52,6 @@ const Table = ({ tableData, tableId }) => {
       setNews(item.TICKER);
     }
 
-    console.log(isTopTable(item))
-
     setActiveTableRow(`${tableId}-${index}`);
     if (tableId == "top") {
       setActiveChart(1);
@@ -171,6 +169,7 @@ const Table = ({ tableData, tableId }) => {
           onClick={() => {
             setActiveTableRow(`top-portfolio`);
             setPortfolioNews();
+            setActiveChart(0)
           }}
           className={activeTableRow == "top-portfolio" ? "row_active" : ""}
           onMouseEnter={handleMouseEnter}
