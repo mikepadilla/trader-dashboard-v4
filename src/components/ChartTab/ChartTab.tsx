@@ -11,7 +11,7 @@ interface rightTabProps {
 }
 
 const ChartTab: FC<rightTabProps> = ({ tabData }) => {
-  const { chartType, setChartType, activeChart, setActiveChart } =
+  const { chartType, setChartType, activeChart } =
     useTableStore();
 
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);

@@ -25,6 +25,7 @@ const News = () => {
 		getPortfolioNews().then(res => {
 			setNewPortfolio(res.summary)
 			setNewsPortfolioLoading(false)
+			console.log(res)
 		})
 	}, [])
 
@@ -72,12 +73,12 @@ const News = () => {
 									columnClassName="my-masonry-grid_column"
 								>
 									{newsArticlesLoading ? <NewsSkeleton /> :
-										newsArticles != undefined ? (newsArticles.stories.map(((item, i) => {
+										newsArticles != undefined ? newsArticles.stories.map(((item, i) => {
 											return <div className="articles__tab-item" key={i}>
 												<h4 className='articles__tab-title'>{item.title}</h4>
 												<p className='articles__tab-description'>{item.description}</p>
 											</div>
-										}))) : null
+										})) : null
 									}
 								</Masonry>
 							</div>

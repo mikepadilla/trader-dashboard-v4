@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { getMarketChartData } from "../../api/getTableData";
 import useTableStore from "../../zustand/store";
-import BarChart from "../chart/BarChart";
-import LineChart from "../chart/LineChart";
-import TradingViewChart from "../chart/TradingViewChart";
+import BarChart from "../chart/BarChart.jsx";
+import LineChart from "../chart/LineChart.jsx";
+import TradingViewChart from "../chart/TradingViewChart.jsx";
 import ChartTab from "../ChartTab/ChartTab";
-import News from "../news/News";
+import News from "../news/News.jsx";
 import RightHeader from "../rightHeader/RightHeader";
 
 const ContentRight = () => {

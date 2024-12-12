@@ -7,7 +7,7 @@ import "./App.css";
 import ContentRight from "./components/contentRight/ContentRight";
 import Footer from "./components/footer/Footer";
 import LeftButtons from "./components/leftButtons/leftButtons";
-import Table from "./components/table/Table";
+import Table from "./components/table/Table.jsx";
 import TableSkeleton from "./components/tableSkeleton/TableSkeleton";
 import useTableStore from "./zustand/store";
 
@@ -48,7 +48,7 @@ function App() {
   const setTopTableProps = () => {
     const newArr: ITabData[] = [];
     if(topTableData !== undefined){
-    Object.keys(topTableData).forEach((key) => {
+    (Object.keys(topTableData) as Array<keyof typeof topTableData>).forEach((key) => {
       newArr.push({
         title: key,
         content: <Table key={key} tableData={topTableData[key]} tableId={'top'}/>,

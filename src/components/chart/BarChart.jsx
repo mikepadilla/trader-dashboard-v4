@@ -156,7 +156,7 @@ const BarChart = ({chartDataProp, yKey, events }) => {
 				borderWidth: "0",
 				displayColors: false
 			},
-			backgroundTicks: backgroundTicks(activeLineYVal),
+			backgroundTicks: backgroundTicks(),
 
 			customPlugin: {
 				activeLineY,
