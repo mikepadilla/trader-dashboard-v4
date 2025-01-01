@@ -1,3 +1,5 @@
+import throttle from "lodash.throttle";
+
 export const backgroundTicks = () => ({
 	id: "backgroundTicks",
 	afterDraw: (chart) => {
@@ -10,23 +12,19 @@ export const backgroundTicks = () => ({
 		const chartWidth = chart.width;
 
 		if (activeLineYVal !== null) {
-			const tickValue = "Avg. " + activeLineYVal;
+			const tickValue = "Avg. " + activeLineYVal.toLocaleString("en-US");
 
-			// Настраиваем стиль текста
 			ctx.font = "12px Arial";
 			const textWidth = ctx.measureText(tickValue).width;
 
-			// Определяем размеры элементов
-			const rectWidth = textWidth + 20; // Добавляем отступы
+			const rectWidth = textWidth + 20; 
 			const rectHeight = 18;
 			const triangleWidth = 7;
 			const triangleHeight = 7;
 			const startX = chartWidth - rectWidth - triangleWidth;
 
-			// Определяем позицию
 			const yPosition = y.getPixelForValue(activeLineYVal) - rectHeight / 2;
 
-			// Рисуем прямоугольник
 			ctx.fillStyle = "#146EB0";
 			ctx.beginPath();
 			ctx.moveTo(startX, yPosition);
@@ -36,7 +34,6 @@ export const backgroundTicks = () => ({
 			ctx.closePath();
 			ctx.fill();
 
-			// Рисуем треугольник
 			ctx.beginPath();
 			const triangleX = startX - triangleWidth;
 			const triangleY = yPosition + rectHeight / 2;
@@ -47,30 +44,51 @@ export const backgroundTicks = () => ({
 			ctx.closePath();
 			ctx.fill();
 
-			// Добавляем текст
 			ctx.fillStyle = "#fff";
-			ctx.fillText(tickValue, startX + 10, yPosition + rectHeight / 1.5); // Позиционируем текст с отступом
+			ctx.fillText(tickValue, startX + 10, yPosition + rectHeight / 1.5); 
 		}
 	},
 })
 
 export const hoverLine = () => ({
 	id: 'hoverLine',
-	beforeDraw: (chart) => {
+	beforeDraw: throttle((chart) => {
 		const activeLineY = chart.options.plugins.customPlugin.activeLineY
 		const { ctx, chartArea, scales: { y } } = chart;
 		if (activeLineY !== null) {
+			const cursorPos = y.getPixelForValue(activeLineY)
+			if (!cursorPos || cursorPos < chartArea.top || cursorPos > chartArea.bottom) {
+				ctx.clearRect(chartArea.left, chartArea.top, chartArea.width, chartArea.height);
+			}
 			ctx.save();
 			ctx.beginPath();
 			ctx.setLineDash([3, 3]);
-			ctx.moveTo(chartArea.left, y.getPixelForValue(activeLineY));
-			ctx.lineTo(chartArea.right, y.getPixelForValue(activeLineY));
+			ctx.moveTo(chartArea.left, cursorPos);
+			ctx.lineTo(chartArea.right, cursorPos);
 			ctx.strokeStyle = '#146EB0';
 			ctx.lineWidth = 1;
 			ctx.stroke();
 			ctx.restore();
 		}
-	}
+		// const mouseY = y.getPixelForValue(activeLineY);
+		// // Проверяем, находится ли мышь в области графика ;,.
+		  
+		// if (!mouseY || mouseY < chartArea.top || mouseY > chartArea.bottom) return;
+
+		// // Очистка предыдущей линии
+		// ctx.clearRect(chartArea.left, chartArea.top, chartArea.width, chartArea.height);
+
+		// // Рисуем линию
+		// ctx.save();
+		// ctx.beginPath();
+		// ctx.setLineDash([3, 3]);
+		// ctx.moveTo(chartArea.left, mouseY);
+		// ctx.lineTo(chartArea.right, mouseY);
+		// ctx.strokeStyle = '#146EB0';
+		// ctx.lineWidth = 1;
+		// ctx.stroke();
+		// ctx.restore();
+	})
 })
 
 

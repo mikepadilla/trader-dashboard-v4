@@ -1,19 +1,20 @@
 import {
   CategoryScale,
   Chart as ChartJS,
+  Filler,
   Legend,
   LinearScale,
   LineElement,
   PointElement,
   Title,
-  Tooltip,
+  Tooltip
 } from "chart.js";
 import { useEffect, useRef, useState } from "react";
 import { Line } from "react-chartjs-2";
 
+import { NewChartOptionLine } from "../../types/types";
 import {
   backgroundTicks,
-  drawEvents,
   hoverLine
 } from "./customChartPlugins";
 import "./style.css";
@@ -25,13 +26,15 @@ ChartJS.register(
   PointElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler            
 );
+
 
 const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
   const [activeLineY, setActiveLineY] = useState(null);
   const [activeLineYVal, setActiveLineYVal] = useState(null);
-
+  const [pointColors, setPointColors] = useState<string[] | string>(['transparent'])
   const chartRef = useRef();
 
   const [chartData, setChartData] =
@@ -41,24 +44,60 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
     setChartData(chartDataProp);
   });
 
-  const data = {
-    labels: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь"],
-    datasets: [
-      {
-        label: "Продажи в 2024 году",
-        data: chartData.map((item, i) => {
-          return { x: i, y: item[yKey] };
-        }),
-        borderWidth: 2,
-        borderColor: "#146EB0",
-        fill: "start",
-        pointBackgroundColor: "transparent",
-        pointBorderColor: "transparent",
-      },
-    ],
+
+  useEffect(() => {
+    if(events) {
+      const colorsArr = []
+      chartDataProp.forEach(item => {
+        if(item && item['trade'] != undefined){
+          if(item['trade'] == 'Buy'){
+            colorsArr.push('green')
+          } else if(item['trade'] == 'Sell') {
+            colorsArr.push('red')
+          }
+        }
+      })
+      setPointColors(colorsArr)
+    } else {
+      setPointColors('transparent')
+    }
+  }, [chartDataProp])
+
+  const data = () => {
+
+      return {
+        labels: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь"],
+        datasets: [
+          {
+            label: "Продажи в 2024 году",
+            data: chartData.map((item, i) => {
+              return { x: i, y: item[yKey] };
+            }),
+            borderWidth: 2,
+            borderColor: "#146EB0",
+            pointBackgroundColor: pointColors,
+            pointBorderColor: "transparent",                                    
+            fill: 'start',
+            backgroundColor: (context) => {
+              const ctx = context.chart.ctx
+              const gradientFill = ctx.createLinearGradient(
+                0,
+                0,
+                0,
+                ctx.canvas.height / 1.5
+              );
+              gradientFill.addColorStop(0, "#5998F533");
+              gradientFill.addColorStop(1, "#ffffff00");
+  
+              return gradientFill;
+            }
+          },
+        ]
+      }
+    
   };
 
-  const options = {
+  const options: NewChartOptionLine = {
     animation: false,
     layout: {
       padding: 0,
@@ -67,11 +106,8 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
       legend: {
         display: false,
       },
-      chartAreaBorder: {
-        borderColor: "transparent",
-        borderWidth: 2,
-      },
-      // backgroundTicksPlugin: this.backgroundTicksPlugin,
+
+      
       tooltip: {
         enabled: events ? true : false,
         yAlign: "bottom",
@@ -100,14 +136,12 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
         backgroundColor: "#146EB0",
         titleColor: "#fff",
         bodyColor: "#fff",
-        labelColor: "#fff",
         titleFont: { weight: "bold" },
         padding: 10,
         cornerRadius: 10,
-        borderWidth: "0",
+        borderWidth: 0,
         displayColors: false,
       },
-      backgroundTicks: backgroundTicks(),
 
       customPlugin: {
         activeLineY,
@@ -115,23 +149,16 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
         chartData,
       },
     },
-    onHover: (event, elements, ctx) => {
-      const chart = ChartJS.getChart(chartRef.current);
+    onHover: (event, _, ctx) => {
       const h = ctx.height - 12;
-
-
-
       const y = Math.max(12, Math.min(h, event.y));
+
       const position = parseFloat(
         (((h - y) / (h - 20)) * (max - min) + min).toFixed(2)
       );
 
       setActiveLineY(position);
       setActiveLineYVal(position);
-
-      if (chart) {
-        chart.update();
-      }
     },
     scales: {
       x: {
@@ -146,8 +173,6 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
           display: false,
         },
 
-        maxTicksLimit: 10,
-        minTicksLimit: 10,
         ticks: {
           display: false,
         },
@@ -167,8 +192,8 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
         },
         ticks: {
           color: "#146EB0",
-          callback: (value) => {
-            return Math.floor(value);
+          callback: (value: number) => {
+            return Math.floor(value).toLocaleString('en-US');
           },
           font: {
             size: 12,
@@ -182,19 +207,17 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
 
   const plugins = [hoverLine(), backgroundTicks() ];
 
-  if (events) {
-    plugins.push(drawEvents());
-  }
 
   return (
     <Line
       className="chart"
       ref={chartRef}
-      data={data}
+      data={data()}
       options={options}
       plugins={plugins}
     />
   );
 };
+
 
 export default LineChart;

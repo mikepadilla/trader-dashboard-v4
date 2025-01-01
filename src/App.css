@@ -53,6 +53,6 @@ main, .app__body{
   height: 100%;
 } */
 
-.tab, .tab__contents, #tradingview_chart{
+.tab, #tradingview_chart{
   height: 100%;
 }

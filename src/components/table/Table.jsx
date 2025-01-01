@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   getArticlesNews,
   getMarketChartData,
@@ -27,6 +27,8 @@ const Table = ({ tableData, tableId }) => {
     setNewsArticlesLoading,
     setNewsPortfolioLoading,
     setActiveChart,
+    setTradingViewChart,
+    setBasisChartData,
   } = useTableStore();
 
   const setChartData = (title) => {
@@ -37,8 +39,8 @@ const Table = ({ tableData, tableId }) => {
   };
 
   const [sortConfig, setSortConfig] = useState({
-    key: Object.keys(tableData[0])[2],
-    direction: "asc",
+    key: Object.keys(tableData[0])[3],
+    direction: "desc",
   });
 
   const onTableRowClick = (
@@ -47,9 +49,14 @@ const Table = ({ tableData, tableId }) => {
   ) => {
     if (isTopTable(item)) {
       setChartData(item.Ticker);
+      setTradingViewChart(item.Ticker)
       setNews(item.Ticker);
+      getMarketChartData(item.Ticker).then(res => {
+        setBasisChartData(res)
+      })
     } else {
       setNews(item.TICKER);
+      setTradingViewChart(item.TICKER)
     }
 
     setActiveTableRow(`${tableId}-${index}`);
@@ -68,7 +75,7 @@ const Table = ({ tableData, tableId }) => {
 
 			const sortedData = [...data].sort((a, b) => {
 				if (typeof a[key] === "number" && typeof b[key] === "number") {
-					return direction === "asc" ? a[key] - b[key] : b[key] - a[key];
+					return direction === "desc" ? a[key] - b[key] : b[key] - a[key];
 				} else {
 					const aKey = a[key].toString().toLowerCase();
 					const bKey = b[key].toString().toLowerCase();
@@ -81,6 +88,10 @@ const Table = ({ tableData, tableId }) => {
     setData(sortedData);
     setSortConfig({ key, direction });
   };
+  
+  useEffect(() => {
+    sortData(sortConfig.key)
+  }, [])
 
   const calculateOpacity = (value, max, min) => {
     if (value > 0) {
@@ -128,6 +139,9 @@ const Table = ({ tableData, tableId }) => {
 
   const setPortfolioNews = () => {
     setChartData("Portfolio Value");
+    getMarketChartData('Transactions').then(res => {
+      setBasisChartData(res)
+    })
     getPortfolioNews().then((res) => {
       setNewsSummary(res);
     });
@@ -143,9 +157,9 @@ const Table = ({ tableData, tableId }) => {
   ) => {
     const opacity = calculateOpacity(value, maxPositive, minNegative);
     if (value > 0) {
-      return `rgba(0, 255, 0, ${opacity})`;
+      return `rgba(1, 135, 64, ${opacity})`;
     } else if (value < 0) {
-      return `rgba(255, 0, 0, ${opacity})`;
+      return `rgba(216, 14, 31, ${opacity})`;
     }
     return "transparent";
   };
@@ -175,13 +189,13 @@ const Table = ({ tableData, tableId }) => {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          {data[0].Ticker == "My Portfolio"
-            ? data.length &&
-              Object.keys(data[0]).map((header) => (
+          {tableData[0].Ticker == "My Portfolio"
+            ? tableData.length &&
+              Object.keys(tableData[0]).map((header) => (
                 <th key={header}>
-                  {typeof data[0][header] == "number"
-                    ? data[0][header].toFixed(2)
-                    : data[0][header]}
+                  {typeof tableData[0][header] == "number"
+                    ? parseFloat(tableData[0][header].toFixed(2)).toLocaleString('en-US')
+                    : tableData[0][header]}
                 </th>
               ))
             : null}
@@ -219,7 +233,7 @@ const Table = ({ tableData, tableId }) => {
             >
               {Object.values(item).map((value, i) => (
                 <td key={i}>
-                  {typeof value == "number" ? value.toFixed(2) : value}
+                  {typeof value == "number" ? parseFloat(value.toFixed(2)).toLocaleString("en-US") : value}
                 </td>
               ))}
             </tr>
@@ -228,10 +242,10 @@ const Table = ({ tableData, tableId }) => {
       </tbody>
       <tfoot>
         <tr>
-          {data[data.length - 1].Ticker == "CASH"
-            ? data.length &&
-              Object.keys(data[data.length - 1]).map((header) => (
-                <td key={header}>{data[data.length - 1][header]}</td>
+          {tableData[tableData.length - 1].Ticker == "CASH"
+            ? tableData.length &&
+              Object.keys(tableData[tableData.length - 1]).map((header) => (
+                <td key={header}>{tableData[tableData.length - 1][header].toLocaleString("en-US")}</td>
               ))
             : null}
         </tr>

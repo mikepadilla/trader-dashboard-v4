@@ -33,13 +33,14 @@ const ChartTab: FC<rightTabProps> = ({ tabData }) => {
                 </button>
               );
             }
-            if (i == 3) {
+            if (i == 3 || i == 2) {
               return (
                 <button
                   className="tab__button"
                   key={i}
                   onClick={() => {
                     setIsPeriodActive(false);
+                    setChartType('cumulative')
                     setActiveTabIndex(i);
                   }}
                 >
@@ -47,6 +48,7 @@ const ChartTab: FC<rightTabProps> = ({ tabData }) => {
                 </button>
               );
             }
+
             return (
               <button
                 className="tab__button"

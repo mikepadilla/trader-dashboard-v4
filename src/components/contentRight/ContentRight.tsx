@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { getMarketChartData } from "../../api/getTableData";
 import useTableStore from "../../zustand/store";
 import BarChart from "../chart/BarChart.jsx";
-import LineChart from "../chart/LineChart.jsx";
+import LineChart from "../chart/LineChart.js";
 import TradingViewChart from "../chart/TradingViewChart.jsx";
 import ChartTab from "../ChartTab/ChartTab";
 import News from "../news/News.jsx";
@@ -62,7 +62,6 @@ const ContentRight = () => {
     getChartData();
   }, []);
 
-
   return (
     <div className="content">
       <RightHeader />
@@ -120,7 +119,7 @@ const ContentRight = () => {
                     max={basisChartData != undefined ? findMinMax(basisChartData, "total cost basis")[1] : 10}
                     chartDataProp={basisChartData}
                     yKey={"total cost basis"}
-                    events={true}
+                    events={activeTableRow == 'top-portfolio'}
                   />
                 ) : (
                   <BarChart

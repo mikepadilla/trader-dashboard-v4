@@ -30,7 +30,6 @@ export const getMarketChartData = (dataUrl: string) => {
 		}).catch((e) => {
 			console.log("MARKET DATA ERROR", e)
 		})
-		console.log('getData')
 	return response
 }
 

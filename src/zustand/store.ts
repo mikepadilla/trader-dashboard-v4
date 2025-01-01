@@ -1,6 +1,6 @@
 
 import { create } from 'zustand'
-import { combine } from 'zustand/middleware'
+import { combine, devtools } from 'zustand/middleware'
 
 
 export interface IPortfolioSnapshot {
@@ -123,6 +123,7 @@ interface IInitialData {
 	topTableData: ITopTableData,
 	bottomTableData: IBottomTableData,
 	marketChartData: chartDataType,
+	tradingViewChart: string,
 	performanceChartData: chartDataType,
 	basisChartData: IBasisChartData[] | undefined,
 	newsSummary: INewsSummary,
@@ -139,6 +140,7 @@ const initialData: IInitialData = {
 	topTableData: {},
 	bottomTableData: {},
 	marketChartData: [],
+	tradingViewChart: 'ADBE',
 	performanceChartData: [],
 	basisChartData: [],
 	newsSummary: {
@@ -169,7 +171,7 @@ const initialData: IInitialData = {
 
 
 const useTableStore = create(
-	combine(initialData, (set) => {
+	devtools(combine(initialData, (set) => {
 		return {
 			setTopTableData: (newTableData: ITopTableData) => {
 				set(() => ({
@@ -184,6 +186,11 @@ const useTableStore = create(
 			setMarketChartData: (newChartData: chartDataType) => {
 				set(() => ({
 					marketChartData: newChartData
+				}))
+			},
+			setTradingViewChart: (newChart: string) => {
+				set(() => ({
+					tradingViewChart: newChart
 				}))
 			},
 			setPerformanceChartData: (newChartData: chartDataType) => {
@@ -232,7 +239,7 @@ const useTableStore = create(
 				}))
 			}
 		}
-	}),
+	})),
 )
 
 
