@@ -113,21 +113,15 @@ const ContentRight = () => {
             {
               title: "Cost Basis",
               content:
-                chartType == "cumulative" ? (
-                  <LineChart
-                    min={basisChartData != undefined ? findMinMax(basisChartData, "total cost basis")[0] : 0}
-                    max={basisChartData != undefined ? findMinMax(basisChartData, "total cost basis")[1] : 10}
-                    chartDataProp={basisChartData}
-                    yKey={"total cost basis"}
-                    events={activeTableRow == 'top-portfolio'}
-                  />
-                ) : (
-                  <BarChart
-                    chartDataProp={basisChartData}
-                    yKey={"total cost basis"}
-										events={false}
-                  />
-                ),
+                
+              <LineChart
+                min={basisChartData != undefined ? findMinMax(basisChartData, "total cost basis")[0] : 0}
+                max={basisChartData != undefined ? findMinMax(basisChartData, "total cost basis")[1] : 10}
+                chartDataProp={basisChartData}
+                yKey={"total cost basis"}
+                events={activeTableRow == 'top-portfolio'}
+              />
+                
             },
             {
               title: "Quote Detail",

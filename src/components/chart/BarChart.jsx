@@ -88,6 +88,12 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
       }
     }
 
+    if(min * -1 > max) {
+      max = min * -1
+    } else {
+      min = max * -1
+    }
+
     return [min, max];
   };
 
@@ -211,7 +217,7 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
       },
       y: {
         min: min,
-        max: max + max / 100,
+        max: max,
         grid: {
           color: "#1F4C69",
           tickLength: 0,
