@@ -13,7 +13,7 @@ import { useEffect, useRef, useState } from "react";
 import { Line } from "react-chartjs-2";
 
 import { NewChartOptionLine } from "../../types/types";
-import {useTableStore} from "../../zustand/store";
+import { useTableStore } from "../../zustand/store";
 import {
   backgroundTicks,
   hoverLine,
@@ -149,7 +149,7 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
           },
           label: (tooltipData) => {
             if(chartData[tooltipData.dataIndex]["cost basis"]) {
-              return `${chartData[tooltipData.dataIndex]["shares"]} Shares $${
+              return `${chartData[tooltipData.dataIndex]["shares"].toLocaleString('en-US')} Shares $${
                 chartData[tooltipData.dataIndex]["cost basis"].toLocaleString('en-US')
               }`;
             } else {

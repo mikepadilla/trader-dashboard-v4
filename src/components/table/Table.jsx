@@ -50,7 +50,6 @@ const Table = ({ tableData, tableId }) => {
     sortData('Change%')
   }
   if(tableData[0]['CHANGE %'] == '' || tableData[0]['CHANGE %']) {
-    console.log(438939458)
     setSortConfig({
       key: 'CHANGE %',
       direction: "desc",
@@ -228,13 +227,25 @@ const Table = ({ tableData, tableId }) => {
                 background: getBackgroundColor(
                   item[sortConfig.key],
                   Math.max(
-                    ...data.map((item) =>
-                      item[sortConfig.key] > 0 ? item[sortConfig.key] : 0
+                    ...data.map((item) =>{
+                      if(item["Ticker"] != 'My Portfolio') {
+                        return item[sortConfig.key] 
+                      } else {
+                        return 0
+                      }
+                    }
                     )
                   ),
                   Math.min(
-                    ...data.map((item) =>
-                      item[sortConfig.key] < 0 ? item[sortConfig.key] : 0
+                    ...data.map((item) =>{
+                      if(item["Ticker"] != 'My Portfolio') {
+                        return item[sortConfig.key] 
+                      } else {
+                        return 0
+                      }
+                        
+                      
+                      }
                     )
                   )
                 ),
