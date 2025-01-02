@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import useTableStore from "../../zustand/store";
+import { useTableStore } from "../../zustand/store";
 
 const TradingViewChart = () => {
   const chartContainerRef = useRef(null);
@@ -12,13 +12,14 @@ const TradingViewChart = () => {
       tradingViewChart == 'META' || tradingViewChart == 'MSFT' || 
       tradingViewChart == 'TSLA' || tradingViewChart == 'AAPL' || 
       tradingViewChart == 'AMZN' || tradingViewChart == 'GOOGL' || 
-      tradingViewChart == 'NVDA' || tradingViewChart == 'INTC'  
+      tradingViewChart == 'NVDA' || tradingViewChart == 'INTC' ||
+      tradingViewChart == 'DJT' || tradingViewChart == 'AVGO' 
     ) {
       setPreData('NASDAQ')
     } else {
       setPreData('NYSE')
     }
-  }, [])
+  }, [tradingViewChart])
 
   useEffect(() => {
     if(chartContainerRef.current) chartContainerRef.current.innerHTML = ''

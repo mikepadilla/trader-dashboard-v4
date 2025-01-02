@@ -1,6 +1,7 @@
 
 import { create } from 'zustand'
 import { combine, devtools } from 'zustand/middleware'
+import { IInitialChartData, INews } from '../types/types'
 
 
 export interface IPortfolioSnapshot {
@@ -170,7 +171,7 @@ const initialData: IInitialData = {
 }
 
 
-const useTableStore = create(
+export const useTableStore = create(
 	devtools(combine(initialData, (set) => {
 		return {
 			setTopTableData: (newTableData: ITopTableData) => {
@@ -242,5 +243,99 @@ const useTableStore = create(
 	})),
 )
 
+const initialNewsState: INews = {
+	articlesNews: {
+		last_id: '',
+		stories: []
+	},
+	articlesLoading: false,
+	summaryNews: {
+		summary: ''
+	},
+	summaryLoading: false,
+}
 
-export default useTableStore
+export const  useNewsStore = create(
+	combine(
+		initialNewsState,
+		(set) => ({
+			setArticlesNews: async (url: string) => {
+				set({articlesLoading: true})
+
+				try{
+					const res = await fetch("https://api.tickertick.com/feed?q=z:" + url + "&n=10")
+
+					if(!res.ok) throw new Error('Failed to fetch articles news! Try again');
+
+					set({articlesNews: await res.json()})
+				}  finally {
+					set({articlesLoading: false})
+				}
+			},
+			setSummaryNews: async (url: string) => {
+				set({summaryLoading: true})
+
+				try{
+					const res = await fetch("https://uxprototypes.org/ibkr/web-trader-dashboard/news-summary.php?ticker=" + url)
+
+					if(!res.ok) throw new Error('Failed to fetch summary news! Try again');
+
+					set({summaryNews: await res.json()})
+				}  finally {
+					set({summaryLoading: false})
+				}
+			},
+			setSummaryPortfolioNews: async () => {
+				set({summaryLoading: true})
+
+				try{
+					const res = await fetch("https://uxprototypes.org/ibkr/web-trader-dashboard/news-summary-portfolio.php?tickers=nvda,msft,meta,amzn,googl,nflx,intc,adbe,aapl,tsla")
+
+					if(!res.ok) throw new Error('Failed to fetch summary news! Try again');
+
+					set({summaryNews: await res.json()})
+				}  finally {
+					set({summaryLoading: false})
+				}
+			}
+		})
+	)
+)
+
+
+const chartUrl = 'https://script.google.com/macros/s/AKfycbxUh0f8wIouxgvOcGK3SyDy_Rcn3Bto0DZ2LblH0pkAWQvuxg8E0DypPoqRM6gHwNN8Dw/exec?sheets='
+
+const initialChartData: IInitialChartData = {
+	chartData: [],
+
+	basisChartData: []
+}
+
+
+export const useChartStore = create(
+	devtools(combine(
+		initialChartData,
+		(set) => ({
+			setChartData: async (url: string) => {
+				fetch(chartUrl + encodeURIComponent(url)).then(res => {
+					if(!res.ok) throw new Error('Failed to fetch chart! Try again');
+					return res.json()
+				}).then(data => {
+					set(() => ({chartData: data}))
+				})
+			},
+			setBasisChartData: async (url: string) => {
+				fetch(chartUrl + encodeURIComponent(url)).then(res => {
+					if(!res.ok) throw new Error('Failed to fetch chart! Try again');
+					return res.json()
+				}).then(data => {
+					set({basisChartData: data})
+				})
+			}
+		})
+	))
+)
+
+
+
+

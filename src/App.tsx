@@ -9,7 +9,7 @@ import Footer from "./components/footer/Footer";
 import LeftButtons from "./components/leftButtons/leftButtons";
 import Table from "./components/table/Table.jsx";
 import TableSkeleton from "./components/tableSkeleton/TableSkeleton";
-import useTableStore from "./zustand/store";
+import { useTableStore } from "./zustand/store";
 
 interface ITabData {
   title: string;

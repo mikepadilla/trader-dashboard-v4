@@ -1,36 +1,29 @@
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import Masonry from 'react-masonry-css'
-import { getArticlesNews, getPortfolioNews } from '../../api/getTableData'
 import setting from '../../assets/tab-settings.svg'
-import useTableStore from '../../zustand/store'
+import { useNewsStore } from '../../zustand/store'
 import NewsSkeleton from '../newsSkeleton/NewsSkeleton'
 
 import './style.css'
 const News = () => {
-	const {newsArticlesLoading, newsPortfolioLoading, setNewsArticlesLoading, setNewsPortfolioLoading} = useTableStore()
 
-	const [newsArticles, setNewsArticles] = useState()
-	const [newsPortfolio, setNewPortfolio] = useState()
+	const articlesLoading = useNewsStore(store => store.articlesLoading)
+	const articlesNews = useNewsStore(store => store.articlesNews)
+	const setArticlesNews = useNewsStore(store => store.setArticlesNews)
 
-
+	const summaryLoading = useNewsStore(store => store.summaryLoading)
+	const summaryNews = useNewsStore(store => store.summaryNews)
+	const setSummaryPortfolioNews = useNewsStore(store => store.setSummaryPortfolioNews)
 
 	useEffect(() => {
-		setNewsArticlesLoading(true)
-		setNewsPortfolioLoading(true)
-		getArticlesNews('').then((res) => {
-			setNewsArticles(res)
-			setNewsArticlesLoading(false)
-		})
-		getPortfolioNews().then(res => {
-			setNewPortfolio(res.summary)
-			setNewsPortfolioLoading(false)
-		})
+		setSummaryPortfolioNews()
+		setArticlesNews('aapl')
 	}, [])
 
 	const breakpointColumns = {
-    default: 2, // Количество колонок по умолчанию
-    1000: 1, // На маленьких экранах — одна колонка
+    default: 2,
+    1000: 1, 
   };
 
 	return (
@@ -49,7 +42,7 @@ const News = () => {
 						<div className="tab__contents">
 							<div className="tab__content tab__content_active" id='portfolio-summary' style={{ whiteSpace: "pre-line" }}>
 
-								{newsPortfolioLoading ? <NewsSkeleton /> : newsPortfolio ? newsPortfolio : null}
+								{summaryLoading ? <NewsSkeleton /> : summaryNews ? summaryNews.summary : null}
 							</div>
 						</div>
 					</div>
@@ -71,8 +64,8 @@ const News = () => {
 									className="my-masonry-grid"
 									columnClassName="my-masonry-grid_column"
 								>
-									{newsArticlesLoading ? <NewsSkeleton /> :
-										newsArticles != undefined ? newsArticles.stories.map(((item, i) => {
+									{articlesLoading ? <NewsSkeleton /> :
+										articlesNews != undefined ? articlesNews.stories.map(((item, i) => {
 											return <div className="articles__tab-item" key={i}>
 												<h4 className='articles__tab-title'>{item.title}</h4>
 												<p className='articles__tab-description'>{item.description}</p>

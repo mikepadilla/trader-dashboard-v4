@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import useTableStore from "../../zustand/store";
+import { useTableStore } from "../../zustand/store";
 import "./style.css";
 interface ITabData {
   title: string;
@@ -11,8 +11,7 @@ interface rightTabProps {
 }
 
 const ChartTab: FC<rightTabProps> = ({ tabData }) => {
-  const { chartType, setChartType, activeChart } =
-    useTableStore();
+  const { chartType, setChartType, activeChart } = useTableStore();
 
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
   const [isPeriodActive, setIsPeriodActive] = useState(true);
@@ -21,7 +20,7 @@ const ChartTab: FC<rightTabProps> = ({ tabData }) => {
     <div className="tab">
       <div className="tab__buttons">
         {activeChart == 3 ? (
-          <button className="tab__button tab__button_active" >
+          <button className="tab__button tab__button_active">
             {tabData[3].title}
           </button>
         ) : (
@@ -40,7 +39,7 @@ const ChartTab: FC<rightTabProps> = ({ tabData }) => {
                   key={i}
                   onClick={() => {
                     setIsPeriodActive(false);
-                    setChartType('cumulative')
+                    setChartType("cumulative");
                     setActiveTabIndex(i);
                   }}
                 >
@@ -63,7 +62,7 @@ const ChartTab: FC<rightTabProps> = ({ tabData }) => {
             );
           })
         )}
-        {isPeriodActive ? (
+        {(isPeriodActive && activeChart != 3) ? (
           <div className="select__chart-period">
             <button
               className={`period__button ${
@@ -101,28 +100,29 @@ const ChartTab: FC<rightTabProps> = ({ tabData }) => {
         ) : null}
       </div>
       <div className="tab__contents">
-        {activeChart == 3? (              <div
-                className="tab__content chart__tab-content tab__content_active"
-
-              >
-                {tabData[3].content}
-              </div>) :tabData.map((item, i) => {
-          if (activeTabIndex == i) {
+        {activeChart == 3 ? (
+          <div className="tab__content chart__tab-content tab__content_active">
+            {tabData[3].content}
+          </div>
+        ) : (
+          tabData.map((item, i) => {
+            if (activeTabIndex == i) {
+              return (
+                <div
+                  className="tab__content chart__tab-content tab__content_active"
+                  key={i}
+                >
+                  {item.content}
+                </div>
+              );
+            }
             return (
-              <div
-                className="tab__content chart__tab-content tab__content_active"
-                key={i}
-              >
+              <div className="tab__content" key={i}>
                 {item.content}
               </div>
             );
-          }
-          return (
-            <div className="tab__content" key={i}>
-              {item.content}
-            </div>
-          );
-        })}
+          })
+        )}
       </div>
     </div>
   );

@@ -70,24 +70,6 @@ export const hoverLine = () => ({
 			ctx.stroke();
 			ctx.restore();
 		}
-		// const mouseY = y.getPixelForValue(activeLineY);
-		// // Проверяем, находится ли мышь в области графика ;,.
-		  
-		// if (!mouseY || mouseY < chartArea.top || mouseY > chartArea.bottom) return;
-
-		// // Очистка предыдущей линии
-		// ctx.clearRect(chartArea.left, chartArea.top, chartArea.width, chartArea.height);
-
-		// // Рисуем линию
-		// ctx.save();
-		// ctx.beginPath();
-		// ctx.setLineDash([3, 3]);
-		// ctx.moveTo(chartArea.left, mouseY);
-		// ctx.lineTo(chartArea.right, mouseY);
-		// ctx.strokeStyle = '#146EB0';
-		// ctx.lineWidth = 1;
-		// ctx.stroke();
-		// ctx.restore();
 	})
 })
 
@@ -129,4 +111,15 @@ export const drawEvents = () => ({
 			}
 		});
 	},
+})
+
+export const leaveEventPlugin = () => ({
+	id: 'someEventCatcher',
+	beforeEvent(chart, args) {
+		if (args.event.type === 'mouseout') {
+			chart.options.plugins.customPlugin.activeLineY = null
+			chart.options.plugins.customPlugin.activeLineY = null
+			chart.update();
+		}
+	}
 })

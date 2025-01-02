@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import {
-  getArticlesNews,
-  getMarketChartData,
-  getNews,
-  getPortfolioNews,
+  getMarketChartData
 } from "../../api/getTableData";
-import useTableStore from "../../zustand/store";
+import { useNewsStore, useTableStore } from "../../zustand/store";
 import "./style.css";
 
 
@@ -22,14 +19,14 @@ const Table = ({ tableData, tableId }) => {
     setPerformanceChartData,
     activeTableRow,
     setActiveTableRow,
-    setNewsSummary,
-    setNewsArticles,
-    setNewsArticlesLoading,
-    setNewsPortfolioLoading,
     setActiveChart,
     setTradingViewChart,
     setBasisChartData,
   } = useTableStore();
+
+  const setArticlesNews = useNewsStore(store => store.setArticlesNews)
+  const setSummaryNews = useNewsStore(store => store.setSummaryNews)
+  const setSummaryPortfolioNews = useNewsStore(store => store.setSummaryPortfolioNews)
 
   const setChartData = (title) => {
     getMarketChartData(title).then((res) => {
@@ -39,9 +36,39 @@ const Table = ({ tableData, tableId }) => {
   };
 
   const [sortConfig, setSortConfig] = useState({
-    key: Object.keys(tableData[0])[3],
+    key: Object.keys(tableData[0])[0],
     direction: "desc",
   });
+
+ useEffect(() => {
+  if(tableData[0]['Change%'] == '' || tableData[0]['Change%']) {
+    
+    setSortConfig({
+      key: 'Change%',
+      direction: "desc",
+    })
+    sortData('Change%')
+  }
+  if(tableData[0]['CHANGE %'] == '' || tableData[0]['CHANGE %']) {
+    console.log(438939458)
+    setSortConfig({
+      key: 'CHANGE %',
+      direction: "desc",
+    })
+    sortData('CHANGE %')
+  }
+  if(
+    !(tableData[0]['Change%'] == '' || tableData[0]['Change%']) && 
+    !(tableData[0]['CHANGE %'] == '' || tableData[0]['CHANGE %'])
+  ) {
+    setSortConfig({
+      key: Object.keys(tableData[0])[2],
+      direction: "desc",
+    })
+    sortData(Object.keys(tableData[0])[2])
+  }
+ }, [])
+
 
   const onTableRowClick = (
     item,
@@ -89,9 +116,7 @@ const Table = ({ tableData, tableId }) => {
     setSortConfig({ key, direction });
   };
   
-  useEffect(() => {
-    sortData(sortConfig.key)
-  }, [])
+
 
   const calculateOpacity = (value, max, min) => {
     if (value > 0) {
@@ -125,16 +150,8 @@ const Table = ({ tableData, tableId }) => {
   };
 
   const setNews = (ticker) => {
-    setNewsArticlesLoading(true);
-    setNewsPortfolioLoading(true);
-    getNews(ticker).then((res) => {
-      setNewsSummary(res);
-      setNewsPortfolioLoading(false);
-    });
-    getArticlesNews(ticker).then((res) => {
-      setNewsArticles(res);
-      setNewsArticlesLoading(false);
-    });
+    setSummaryNews(ticker)
+    setArticlesNews(ticker)
   };
 
   const setPortfolioNews = () => {
@@ -142,12 +159,9 @@ const Table = ({ tableData, tableId }) => {
     getMarketChartData('Transactions').then(res => {
       setBasisChartData(res)
     })
-    getPortfolioNews().then((res) => {
-      setNewsSummary(res);
-    });
-    getArticlesNews("NVDA").then((res) => {
-      setNewsArticles(res);
-    });
+
+    setSummaryPortfolioNews();
+    setArticlesNews('nvda');
   };
 
   const getBackgroundColor = (

@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { getMarketChartData } from "../../api/getTableData";
-import useTableStore from "../../zustand/store";
-import BarChart from "../chart/BarChart.jsx";
+import {useTableStore} from "../../zustand/store";
+import BarChart from "../chart/BarChart.js";
 import LineChart from "../chart/LineChart.js";
 import TradingViewChart from "../chart/TradingViewChart.jsx";
 import ChartTab from "../ChartTab/ChartTab";
-import News from "../news/News.jsx";
+import News from "../news/News.js";
 import RightHeader from "../rightHeader/RightHeader";
 
 const ContentRight = () => {
@@ -119,7 +119,7 @@ const ContentRight = () => {
                 max={basisChartData != undefined ? findMinMax(basisChartData, "total cost basis")[1] : 10}
                 chartDataProp={basisChartData}
                 yKey={"total cost basis"}
-                events={activeTableRow == 'top-portfolio'}
+                events={true}
               />
                 
             },

@@ -13,9 +13,11 @@ import { useEffect, useRef, useState } from "react";
 import { Line } from "react-chartjs-2";
 
 import { NewChartOptionLine } from "../../types/types";
+import {useTableStore} from "../../zustand/store";
 import {
   backgroundTicks,
-  hoverLine
+  hoverLine,
+  leaveEventPlugin
 } from "./customChartPlugins";
 import "./style.css";
 
@@ -35,6 +37,7 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
   const [activeLineY, setActiveLineY] = useState(null);
   const [activeLineYVal, setActiveLineYVal] = useState(null);
   const [pointColors, setPointColors] = useState<string[] | string>(['transparent'])
+  const [pointEvents, setPointEvents] = useState<number[] | number>([0])
   const chartRef = useRef();
 
   const [chartData, setChartData] =
@@ -44,10 +47,13 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
     setChartData(chartDataProp);
   });
 
+  const tradingViewChart = useTableStore(store => store.tradingViewChart)
+
 
   useEffect(() => {
     if(events) {
       const colorsArr = []
+      const eventsArr = []
       chartDataProp.forEach(item => {
         if(item && item['trade'] != undefined){
           if(item['trade'] == 'Buy'){
@@ -55,17 +61,28 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
           } else if(item['trade'] == 'Sell') {
             colorsArr.push('red')
           }
+          eventsArr.push(3)
+        } else if(item && item['daily buy sell']){
+          if(item['daily buy sell'] > 0){
+            colorsArr.push('green')
+          } else if(item['daily buy sell'] < 0) {
+            colorsArr.push('red')
+          }
+          eventsArr.push(3)
+        } else {
+          colorsArr.push('transparent')
+          eventsArr.push(0)
         }
       })
       setPointColors(colorsArr)
+      setPointEvents(eventsArr)
     } else {
       setPointColors('transparent')
     }
   }, [chartDataProp])
 
-  const data = () => {
+  const data = {
 
-      return {
         labels: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь"],
         datasets: [
           {
@@ -75,6 +92,8 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
             }),
             borderWidth: 2,
             borderColor: "#146EB0",
+            pointRadius: pointEvents,
+            pointHitRadius: pointEvents,
             pointBackgroundColor: pointColors,
             pointBorderColor: "transparent",                                    
             fill: 'start',
@@ -93,7 +112,7 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
             }
           },
         ]
-      }
+      
     
   };
 
@@ -102,6 +121,7 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
     layout: {
       padding: 0,
     },
+
     plugins: {
       legend: {
         display: false,
@@ -113,16 +133,31 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
         yAlign: "bottom",
         callbacks: {
           title: (tooltipData) => {
-            return `${chartData[tooltipData[0].dataIndex][
-              "ticker"
-            ].toUpperCase()} $${chartData[tooltipData[0].dataIndex][
-              yKey
-            ].toLocaleString("en-US")}`;
+            if(chartData[tooltipData[0].dataIndex]["ticker"]){
+              return `${chartData[tooltipData[0].dataIndex][
+                "ticker"
+              ].toUpperCase()} $${chartData[tooltipData[0].dataIndex][
+                yKey
+              ].toLocaleString("en-US")}`;
+            } else {
+              return `${tradingViewChart} $${chartData[tooltipData[0].dataIndex][
+                yKey
+              ].toLocaleString("en-US")}`;
+            }
+            
+
           },
           label: (tooltipData) => {
-            return `${chartData[tooltipData.dataIndex]["shares"]} Shares ${
-              chartData[tooltipData.dataIndex]["cost basis"]
-            }`;
+            if(chartData[tooltipData.dataIndex]["cost basis"]) {
+              return `${chartData[tooltipData.dataIndex]["shares"]} Shares $${
+                chartData[tooltipData.dataIndex]["cost basis"].toLocaleString('en-US')
+              }`;
+            } else {
+              return `${chartData[tooltipData.dataIndex]["shares"]} Shares $${
+                chartData[tooltipData.dataIndex]["price"].toLocaleString('en-US')
+              }`;
+            }
+
           },
           footer: (tooltipData) => {
             const date = new Date(chartData[tooltipData[0].dataIndex]["date"]);
@@ -160,6 +195,7 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
       setActiveLineY(position);
       setActiveLineYVal(position);
     },
+
     scales: {
       x: {
         min: 1,
@@ -205,14 +241,15 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
     },
   };
 
-  const plugins = [hoverLine(), backgroundTicks() ];
+  const plugins = [hoverLine(), backgroundTicks(), leaveEventPlugin() ];
 
 
+ 
   return (
     <Line
       className="chart"
       ref={chartRef}
-      data={data()}
+      data={data}
       options={options}
       plugins={plugins}
     />

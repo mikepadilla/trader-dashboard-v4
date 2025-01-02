@@ -8,7 +8,6 @@ import {
   Tooltip,
 } from "chart.js";
 
-// Регистрация компонентов Chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -21,8 +20,9 @@ ChartJS.register(
 import { useEffect, useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
 
-import useTableStore from "../../zustand/store";
-import { backgroundTicks, drawEvents, hoverLine } from "./customChartPlugins";
+import { NewChartOptionBar } from "../../types/types";
+import { useTableStore } from "../../zustand/store";
+import { backgroundTicks, drawEvents, hoverLine, leaveEventPlugin } from "./customChartPlugins";
 import "./style.css";
 
 const BarChart = ({ chartDataProp, yKey, events }) => {
@@ -117,7 +117,6 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
           return { x: i, y: item[yKey] };
         }),
         borderWidth: 0,
-        // borderColor: getColors(chartData),
         fill: "start",
         pointBackgroundColor: "transparent",
         pointBorderColor: "transparent",
@@ -128,7 +127,7 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
 
   const [min, max] = findMinMax(chartData, yKey);
 
-  const options = {
+  const options: NewChartOptionBar = {
     animation: false,
     maintainAspectRatio: false,
     layout: {
@@ -137,10 +136,6 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
     plugins: {
       legend: {
         display: false,
-      },
-      chartAreaBorder: {
-        borderColor: "transparent",
-        borderWidth: 2,
       },
       tooltip: {
         enabled: events ? true : false,
@@ -170,14 +165,12 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
         backgroundColor: "#146EB0",
         titleColor: "#fff",
         bodyColor: "#fff",
-        labelColor: "#fff",
         titleFont: { weight: "bold" },
         padding: 0,
         cornerRadius: 10,
-        borderWidth: "0",
+        borderWidth: 0,
         displayColors: false,
       },
-      backgroundTicks: backgroundTicks(),
 
       customPlugin: {
         activeLineY,
@@ -185,7 +178,7 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
         chartData,
       },
     },
-    onHover: (event, elements, ctx) => {
+    onHover: (event, _, ctx) => {
       const h = ctx.height - 12;
 
       const y = Math.max(12, Math.min(h, event.y));
@@ -209,8 +202,6 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
           display: false,
         },
 
-        maxTicksLimit: 10,
-        minTicksLimit: 10,
         ticks: {
           display: false,
         },
@@ -230,7 +221,7 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
         },
         ticks: {
           color: "#146EB0",
-          callback: (value) => {
+          callback: (value: number) => {
             return Math.floor(value);
           },
           font: {
@@ -243,7 +234,7 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
     },
   };
 
-  const plugins = [hoverLine(), backgroundTicks()];
+  const plugins = [hoverLine(), backgroundTicks(), leaveEventPlugin()];
 
   if (events) {
     plugins.push(drawEvents());
