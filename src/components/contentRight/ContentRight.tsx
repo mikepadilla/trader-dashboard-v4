@@ -3,7 +3,7 @@ import { getMarketChartData } from "../../api/getTableData";
 import {useTableStore} from "../../zustand/store";
 import BarChart from "../chart/BarChart.js";
 import LineChart from "../chart/LineChart.js";
-import TradingViewChart from "../chart/TradingViewChart.jsx";
+import TradingViewChart from "../chart/TradingViewChart.js";
 import ChartTab from "../ChartTab/ChartTab";
 import News from "../news/News.js";
 import RightHeader from "../rightHeader/RightHeader";

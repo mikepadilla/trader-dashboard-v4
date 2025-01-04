@@ -7,7 +7,7 @@ import "./App.css";
 import ContentRight from "./components/contentRight/ContentRight";
 import Footer from "./components/footer/Footer";
 import LeftButtons from "./components/leftButtons/leftButtons";
-import Table from "./components/table/Table.jsx";
+import Table from "./components/table/Table.js";
 import TableSkeleton from "./components/tableSkeleton/TableSkeleton";
 import { useTableStore } from "./zustand/store";
 

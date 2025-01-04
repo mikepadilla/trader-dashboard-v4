@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react";
-import {
-  getMarketChartData
-} from "../../api/getTableData";
+import { getMarketChartData } from "../../api/getTableData";
 import { useNewsStore, useTableStore } from "../../zustand/store";
 import "./style.css";
 
-
-function isTopTable(
-  obj
-) {
+function isTopTable(obj) {
   return "Ticker" in obj;
 }
 
@@ -24,9 +19,11 @@ const Table = ({ tableData, tableId }) => {
     setBasisChartData,
   } = useTableStore();
 
-  const setArticlesNews = useNewsStore(store => store.setArticlesNews)
-  const setSummaryNews = useNewsStore(store => store.setSummaryNews)
-  const setSummaryPortfolioNews = useNewsStore(store => store.setSummaryPortfolioNews)
+  const setArticlesNews = useNewsStore((store) => store.setArticlesNews);
+  const setSummaryNews = useNewsStore((store) => store.setSummaryNews);
+  const setSummaryPortfolioNews = useNewsStore(
+    (store) => store.setSummaryPortfolioNews
+  );
 
   const setChartData = (title) => {
     getMarketChartData(title).then((res) => {
@@ -40,49 +37,44 @@ const Table = ({ tableData, tableId }) => {
     direction: "desc",
   });
 
- useEffect(() => {
-  if(tableData[0]['Change%'] == '' || tableData[0]['Change%']) {
-    
-    setSortConfig({
-      key: 'Change%',
-      direction: "desc",
-    })
-    sortData('Change%')
-  }
-  if(tableData[0]['CHANGE %'] == '' || tableData[0]['CHANGE %']) {
-    setSortConfig({
-      key: 'CHANGE %',
-      direction: "desc",
-    })
-    sortData('CHANGE %')
-  }
-  if(
-    !(tableData[0]['Change%'] == '' || tableData[0]['Change%']) && 
-    !(tableData[0]['CHANGE %'] == '' || tableData[0]['CHANGE %'])
-  ) {
-    setSortConfig({
-      key: Object.keys(tableData[0])[2],
-      direction: "desc",
-    })
-    sortData(Object.keys(tableData[0])[2])
-  }
- }, [])
+  useEffect(() => {
+    if (tableData[0]["Change%"] == "" || tableData[0]["Change%"]) {
+      setSortConfig({
+        key: "Change%",
+        direction: "desc",
+      });
+      sortData("Change%");
+    }
+    if (tableData[0]["CHANGE %"] == "" || tableData[0]["CHANGE %"]) {
+      setSortConfig({
+        key: "CHANGE %",
+        direction: "desc",
+      });
+      sortData("CHANGE %");
+    }
+    if (
+      !(tableData[0]["Change%"] == "" || tableData[0]["Change%"]) &&
+      !(tableData[0]["CHANGE %"] == "" || tableData[0]["CHANGE %"])
+    ) {
+      setSortConfig({
+        key: Object.keys(tableData[0])[2],
+        direction: "desc",
+      });
+      sortData(Object.keys(tableData[0])[2]);
+    }
+  }, []);
 
-
-  const onTableRowClick = (
-    item,
-    index
-  ) => {
+  const onTableRowClick = (item, index) => {
     if (isTopTable(item)) {
       setChartData(item.Ticker);
-      setTradingViewChart(item.Ticker)
+      setTradingViewChart(item.Ticker);
       setNews(item.Ticker);
-      getMarketChartData(item.Ticker).then(res => {
-        setBasisChartData(res)
-      })
+      getMarketChartData(item.Ticker).then((res) => {
+        setBasisChartData(res);
+      });
     } else {
       setNews(item.TICKER);
-      setTradingViewChart(item.TICKER)
+      setTradingViewChart(item.TICKER);
     }
 
     setActiveTableRow(`${tableId}-${index}`);
@@ -93,29 +85,25 @@ const Table = ({ tableData, tableId }) => {
     }
   };
 
-  const sortData = (
-    key
-  ) => {
+  const sortData = (key) => {
     const direction =
       sortConfig.key === key && sortConfig.direction === "asc" ? "desc" : "asc";
 
-			const sortedData = [...data].sort((a, b) => {
-				if (typeof a[key] === "number" && typeof b[key] === "number") {
-					return direction === "desc" ? a[key] - b[key] : b[key] - a[key];
-				} else {
-					const aKey = a[key].toString().toLowerCase();
-					const bKey = b[key].toString().toLowerCase();
-					if (aKey < bKey) return direction === "asc" ? -1 : 1;
-					if (aKey > bKey) return direction === "asc" ? 1 : -1;
-					return 0;
-				}
-			});
+    const sortedData = [...data].sort((a, b) => {
+      if (typeof a[key] === "number" && typeof b[key] === "number") {
+        return direction === "desc" ? a[key] - b[key] : b[key] - a[key];
+      } else {
+        const aKey = a[key].toString().toLowerCase();
+        const bKey = b[key].toString().toLowerCase();
+        if (aKey < bKey) return direction === "asc" ? -1 : 1;
+        if (aKey > bKey) return direction === "asc" ? 1 : -1;
+        return 0;
+      }
+    });
 
     setData(sortedData);
     setSortConfig({ key, direction });
   };
-  
-
 
   const calculateOpacity = (value, max, min) => {
     if (value > 0) {
@@ -149,25 +137,21 @@ const Table = ({ tableData, tableId }) => {
   };
 
   const setNews = (ticker) => {
-    setSummaryNews(ticker)
-    setArticlesNews(ticker)
+    setSummaryNews(ticker);
+    setArticlesNews(ticker);
   };
 
   const setPortfolioNews = () => {
     setChartData("Portfolio Value");
-    getMarketChartData('Transactions').then(res => {
-      setBasisChartData(res)
-    })
+    getMarketChartData("Transactions").then((res) => {
+      setBasisChartData(res);
+    });
 
     setSummaryPortfolioNews();
-    setArticlesNews('nvda');
+    setArticlesNews("nvda");
   };
 
-  const getBackgroundColor = (
-    value,
-    maxPositive,
-    minNegative
-  ) => {
+  const getBackgroundColor = (value, maxPositive, minNegative) => {
     const opacity = calculateOpacity(value, maxPositive, minNegative);
     if (value > 0) {
       return `rgba(1, 135, 64, ${opacity})`;
@@ -196,7 +180,7 @@ const Table = ({ tableData, tableId }) => {
           onClick={() => {
             setActiveTableRow(`top-portfolio`);
             setPortfolioNews();
-            setActiveChart(0)
+            setActiveChart(0);
           }}
           className={activeTableRow == "top-portfolio" ? "row_active" : ""}
           onMouseEnter={handleMouseEnter}
@@ -207,7 +191,9 @@ const Table = ({ tableData, tableId }) => {
               Object.keys(tableData[0]).map((header) => (
                 <th key={header}>
                   {typeof tableData[0][header] == "number"
-                    ? parseFloat(tableData[0][header].toFixed(2)).toLocaleString('en-US')
+                    ? parseFloat(
+                        tableData[0][header].toFixed(2)
+                      ).toLocaleString("en-US")
                     : tableData[0][header]}
                 </th>
               ))
@@ -227,26 +213,22 @@ const Table = ({ tableData, tableId }) => {
                 background: getBackgroundColor(
                   item[sortConfig.key],
                   Math.max(
-                    ...data.map((item) =>{
-                      if(item["Ticker"] != 'My Portfolio') {
-                        return item[sortConfig.key] 
+                    ...data.map((item) => {
+                      if (item["Ticker"] != "My Portfolio") {
+                        return item[sortConfig.key];
                       } else {
-                        return 0
+                        return 0;
                       }
-                    }
-                    )
+                    })
                   ),
                   Math.min(
-                    ...data.map((item) =>{
-                      if(item["Ticker"] != 'My Portfolio') {
-                        return item[sortConfig.key] 
+                    ...data.map((item) => {
+                      if (item["Ticker"] != "My Portfolio") {
+                        return item[sortConfig.key];
                       } else {
-                        return 0
+                        return 0;
                       }
-                        
-                      
-                      }
-                    )
+                    })
                   )
                 ),
               }}
@@ -256,9 +238,11 @@ const Table = ({ tableData, tableId }) => {
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              {Object.values(item).map((value, i) => (
+              {Object.values(item).map((value: number | string, i) => (
                 <td key={i}>
-                  {typeof value == "number" ? parseFloat(value.toFixed(2)).toLocaleString("en-US") : value}
+                  {typeof value == "number"
+                    ? parseFloat(value.toFixed(2)).toLocaleString("en-US")
+                    : value}
                 </td>
               ))}
             </tr>
@@ -270,7 +254,11 @@ const Table = ({ tableData, tableId }) => {
           {tableData[tableData.length - 1].Ticker == "CASH"
             ? tableData.length &&
               Object.keys(tableData[tableData.length - 1]).map((header) => (
-                <td key={header}>{tableData[tableData.length - 1][header].toLocaleString("en-US")}</td>
+                <td key={header}>
+                  {tableData[tableData.length - 1][header].toLocaleString(
+                    "en-US"
+                  )}
+                </td>
               ))
             : null}
         </tr>
