@@ -236,6 +236,7 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
             family: "Proxima nova, sans-serif",
           },
           padding: 10,
+          maxTicksLimit:8
         },
       },
     },

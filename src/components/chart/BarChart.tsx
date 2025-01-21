@@ -88,11 +88,6 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
       }
     }
 
-    if(min * -1 > max) {
-      max = min * -1
-    } else {
-      min = max * -1
-    }
 
     return [min, max];
   };
@@ -229,6 +224,7 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
             family: "Proxima nova, sans-serif",
           },
           padding: 10,
+          maxTicksLimit:8
         },
       },
     },

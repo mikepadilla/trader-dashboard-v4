@@ -25,6 +25,12 @@ const Table = ({ tableData, tableId }) => {
     (store) => store.setSummaryPortfolioNews
   );
 
+  const [sortConfig, setSortConfig] = useState({
+    key: Object.keys(tableData[0])[0],
+    direction: "desc",
+  });
+
+
   const setChartData = (title) => {
     getMarketChartData(title).then((res) => {
       setMarketChartData(res);
@@ -32,10 +38,6 @@ const Table = ({ tableData, tableId }) => {
     });
   };
 
-  const [sortConfig, setSortConfig] = useState({
-    key: Object.keys(tableData[0])[0],
-    direction: "desc",
-  });
 
   useEffect(() => {
     if (tableData[0]["Change%"] == "" || tableData[0]["Change%"]) {
@@ -92,6 +94,8 @@ const Table = ({ tableData, tableId }) => {
     const sortedData = [...data].sort((a, b) => {
       if (typeof a[key] === "number" && typeof b[key] === "number") {
         return direction === "desc" ? a[key] - b[key] : b[key] - a[key];
+      } else if(typeof parseShortNumber(a[key]) === 'number' && typeof parseShortNumber(b[key]) === 'number' ) {
+        return direction === "desc" ? parseShortNumber(a[key]) - parseShortNumber(b[key]) : parseShortNumber(b[key]) - parseShortNumber(a[key]);
       } else {
         const aKey = a[key].toString().toLowerCase();
         const bKey = b[key].toString().toLowerCase();
@@ -100,6 +104,7 @@ const Table = ({ tableData, tableId }) => {
         return 0;
       }
     });
+
 
     setData(sortedData);
     setSortConfig({ key, direction });
@@ -160,6 +165,31 @@ const Table = ({ tableData, tableId }) => {
     }
     return "transparent";
   };
+
+  function parseShortNumber(val): number   {
+    const multipliers = {
+
+      B: 1e9, 
+    };
+
+    console.log(val)
+    if(typeof val == 'number') {
+      return val
+    }
+  
+    const match = val.match(/^(\d+(\.\d+)?)([B])?$/);
+  
+    if (!match) {
+      return val
+    }
+
+  
+    const number = parseFloat(match[1]); 
+    const suffix = match[3];
+
+    return suffix ? number * multipliers[suffix] : number;
+  }
+
   return (
     <table className="table">
       <thead>
@@ -211,20 +241,26 @@ const Table = ({ tableData, tableId }) => {
               key={index}
               style={{
                 background: getBackgroundColor(
-                  item[sortConfig.key],
+                  parseShortNumber(`${item[sortConfig.key]}`),
                   Math.max(
-                    ...data.map((item) => {
-                      if (item["Ticker"] != "My Portfolio") {
+                    ...data.map((item,) => {
+                      if (item["Ticker"] != "My Portfolio" && typeof item[sortConfig.key] == 'number') {
                         return item[sortConfig.key];
+                      } else if(item["Ticker"] != "My Portfolio" && parseInt(item[sortConfig.key].replace(/[^0-9.]/g, ''))) {
+                        return parseShortNumber(`${item[sortConfig.key]}`)
                       } else {
                         return 0;
                       }
+                      
+                     
                     })
                   ),
                   Math.min(
                     ...data.map((item) => {
-                      if (item["Ticker"] != "My Portfolio") {
+                      if (item["Ticker"] != "My Portfolio" && typeof item[sortConfig.key] == 'number') {
                         return item[sortConfig.key];
+                      } else if(item["Ticker"] != "My Portfolio" && parseInt(item[sortConfig.key].replace(/[^0-9.]/g, ''))) {
+                        return parseShortNumber(`${item[sortConfig.key]}`)
                       } else {
                         return 0;
                       }

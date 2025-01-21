@@ -59,12 +59,12 @@ const News = () => {
 					<div className="tabs__contents">
 						<div className="tab__contents">
 							<div className="tab__content tab__content_active">
-							<Masonry
+							{articlesLoading ? <NewsSkeleton /> : <Masonry
 									breakpointCols={breakpointColumns}
 									className="my-masonry-grid"
 									columnClassName="my-masonry-grid_column"
 								>
-									{articlesLoading ? <NewsSkeleton /> :
+									{
 										articlesNews != undefined ? articlesNews.stories.map(((item, i) => {
 											return <div className="articles__tab-item" key={i}>
 												<h4 className='articles__tab-title'>{item.title}</h4>
@@ -72,7 +72,7 @@ const News = () => {
 											</div>
 										})) : null
 									}
-								</Masonry>
+								</Masonry>}
 							</div>
 						</div>
 					</div>
