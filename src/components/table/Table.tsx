@@ -168,11 +168,8 @@ const Table = ({ tableData, tableId }) => {
 
   function parseShortNumber(val): number   {
     const multipliers = {
-
       B: 1e9, 
     };
-
-    console.log(val)
     if(typeof val == 'number') {
       return val
     }
@@ -182,7 +179,6 @@ const Table = ({ tableData, tableId }) => {
     if (!match) {
       return val
     }
-
   
     const number = parseFloat(match[1]); 
     const suffix = match[3];
