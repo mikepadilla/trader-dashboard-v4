@@ -197,8 +197,11 @@ const Table = ({ tableData, tableId }) => {
                 onClick={() => {
                   sortData(header);
                 }}
+                
               >
-                {header}
+                <span
+                style={{ paddingRight: sortConfig.key !== header ? "12.3px" : "3px" }}
+                >{header}</span> {sortConfig.key === header ? (sortConfig.direction === "desc" ? "▲" : "▼") : ""}
               </th>
             ))}
         </tr>
