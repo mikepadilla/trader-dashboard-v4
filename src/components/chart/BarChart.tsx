@@ -31,10 +31,11 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
 
   const { chartType } = useTableStore();
 
+  
   const chartRef = useRef();
-
+  
   const [chartData, setChartData] = useState(chartDataProp);
-
+  
   useEffect(() => {
     findMinMax(chartData, yKey);
   }, []);
@@ -198,7 +199,15 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
         },
 
         ticks: {
-          display: false,
+          color: "#146EB0",align: 'inner',
+          count: 11,
+          callback: (val) => {
+            return new Date(val).toLocaleDateString('en-GB', {
+                
+                month: "short",
+                year: "numeric"
+            });
+          }
         },
       },
       y: {
@@ -211,7 +220,9 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
         position: "right",
         type: "linear",
         border: {
-          dash: [3],
+          dash:  (context) => {
+           return context.tick.value === min ? [] : [3]; // Линия на y=50 сплошная, остальные пунктирные
+         },
           display: false,
         },
         ticks: {
@@ -224,7 +235,7 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
             family: "Proxima nova, sans-serif",
           },
           padding: 10,
-          maxTicksLimit:8
+          count: 8
         },
       },
     },
@@ -232,11 +243,11 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
 
   const plugins = [hoverLine(), backgroundTicks(), leaveEventPlugin()];
 
-  if (events) {
+    if (events) {
     plugins.push(drawEvents());
   }
 
-  return (
+   return (
     <Bar
       className="chart"
       ref={chartRef}

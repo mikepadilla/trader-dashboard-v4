@@ -29,7 +29,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  Filler            
+  Filler      
 );
 
 
@@ -81,14 +81,15 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
     }
   }, [chartDataProp])
 
+
   const data = {
 
         labels: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь"],
         datasets: [
           {
             label: "Продажи в 2024 году",
-            data: chartData.map((item, i) => {
-              return { x: i, y: item[yKey] };
+            data: chartData.map((item) => {
+              return { x: new Date(item['date']).getTime(), y: item[yKey] };
             }),
             borderWidth: 2,
             borderColor: "#146EB0",
@@ -115,6 +116,24 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
       
     
   };
+
+  const findMinMaxDay = (data): [number, number] => {  
+   if(data[0]) {
+    let min: number = new Date(data[0]['date']).getTime();
+    let max: number = new Date(data[0]['date']).getTime();
+
+    for (let i = 0; i < data.length; i++) {
+      if (max < new Date(data[i]['date']).getTime()) {
+        max = new Date(data[i]['date']).getTime();
+      }
+      if (min > new Date(data[i]['date']).getTime()) {
+        min = new Date(data[i]['date']).getTime();
+      }
+    }
+    return [min, max]
+   }
+   return [0, 0]
+  }
 
   const options: NewChartOptionLine = {
     animation: false,
@@ -198,8 +217,8 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
 
     scales: {
       x: {
-        min: 1,
-        max: chartData.length,
+        min: findMinMaxDay(chartData)[0],
+        max: findMinMaxDay(chartData)[1],
         grid: {
           color: "transparent",
         },
@@ -210,7 +229,15 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
         },
 
         ticks: {
-          display: false,
+          color: "#146EB0",align: 'inner',
+          count: 11,
+          callback: (val) => {
+            return new Date(val).toLocaleDateString('en-GB', {
+                
+                month: "short",
+                year: "numeric"
+            });
+          }
         },
       },
       y: {
@@ -219,13 +246,17 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
         grid: {
           color: "#1F4C69",
           tickLength: 0,
+          
         },
         position: "right",
         type: "linear",
         border: {
-          dash: [3],
+         dash:  (context) => {
+          return context.tick.value === min - max / 100 ? [] : [3]; // Линия на y=50 сплошная, остальные пунктирные
+        },
           display: false,
         },
+        
         ticks: {
           color: "#146EB0",
           callback: (value: number) => {
@@ -236,7 +267,7 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
             family: "Proxima nova, sans-serif",
           },
           padding: 10,
-          maxTicksLimit:8
+          count: 8
         },
       },
     },
