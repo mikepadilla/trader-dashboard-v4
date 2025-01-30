@@ -2,7 +2,7 @@
 import { useEffect } from 'react'
 import Masonry from 'react-masonry-css'
 import setting from '../../assets/tab-settings.svg'
-import { useNewsStore } from '../../zustand/store'
+import { useNewsStore, useTableStore } from '../../zustand/store'
 import NewsSkeleton from '../newsSkeleton/NewsSkeleton'
 
 import './style.css'
@@ -15,7 +15,8 @@ const News = () => {
 	const summaryLoading = useNewsStore(store => store.summaryLoading)
 	const summaryNews = useNewsStore(store => store.summaryNews)
 	const setSummaryPortfolioNews = useNewsStore(store => store.setSummaryPortfolioNews)
-
+	const activeTableRow = useTableStore(store => store.activeTableRow)
+	const tradingViewChart = useTableStore(store => store.tradingViewChart)
 	useEffect(() => {
 		setSummaryPortfolioNews()
 		setArticlesNews('aapl')
@@ -26,13 +27,15 @@ const News = () => {
     1000: 1, 
   };
 
+	console.log(activeTableRow)
+
 	return (
 		<div className="news" style={{ width: '100%' }}>
 			<div className="content__tabs ">
 				<div className="content__tab summary__tab" >
 					<div className="tab__buttons">
 						<div className="buttons__wrapper">
-							<button className="tab__button tab__button_active">Portfolio News Summary</button>
+							<button className="tab__button tab__button_active">{activeTableRow == 'top-portfolio' ? 'Portfolio' : tradingViewChart} News Summary</button>
 						</div>
 						<div className="tab__settings">
 							<img src={setting} alt="tab setting" />
@@ -50,7 +53,7 @@ const News = () => {
 				<div className="content__tab articles__tab">
 					<div className="tab__buttons">
 						<div className="buttons__wrapper">
-							<button className="tab__button tab__button_active">Portfolio News Articles</button>
+							<button className="tab__button tab__button_active">{activeTableRow == 'top-portfolio' ? 'Portfolio' : tradingViewChart} News Articles</button>
 						</div>
 						<div className="tab__settings">
 							<img src={setting} alt="tab setting" />
