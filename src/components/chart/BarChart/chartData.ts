@@ -1,4 +1,4 @@
-const getColors = (data, yKey) => {
+const getColors = (data, yKey,) => {
 		const colorsArr = [];
 		data.forEach((item, i) => {
 			if (item[yKey] < 0) {
@@ -20,9 +20,7 @@ export const data = (chartData, yKey) => {
 				}),
 				borderWidth: 0,
 				fill: "start",
-				pointBackgroundColor: "transparent",
-				pointBorderColor: "transparent",
-				backgroundColor: getColors(chartData, yKey)
+				backgroundColor: getColors(chartData, yKey),
 			},
 		],
 	}

@@ -107,7 +107,7 @@ const ContentRight = () => {
                 <BarChart
                   chartDataProp={chartData}
                   yKey={"daily buy sell"}
-                  events={false}
+                  events={true}
                 />
               ),
                 

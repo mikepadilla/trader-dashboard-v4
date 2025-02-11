@@ -31,6 +31,10 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
   const [activeLineYVal, setActiveLineYVal] = useState(null);
   const [chartData, setChartData] = useState(chartDataProp);
 
+
+  const tradingViewChart = useChartStore((store) => store.tradingViewChart);
+  
+
   const chartType = useChartStore((state) => state.chartType);
   const chartRef = useRef();
   
@@ -41,6 +45,24 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
   useEffect(() => {
     setChartData(resetData(chartDataProp));
   }, [chartType, chartDataProp]);
+
+    useEffect(() => {
+      if(events) {
+        const eventsArr = []
+        chartDataProp.forEach(item => {
+          if(item && item['trade'] != undefined){
+            eventsArr.push(3)
+          } else if(item && item['daily buy sell']){
+            eventsArr.push(3)
+          } else {
+            eventsArr.push(0)
+          }
+        })
+        if(chartDataProp.length > 0 && !chartDataProp[0]['share amount']){
+          eventsArr.shift()
+        }
+      } 
+    }, [chartDataProp])
 
   const resetData = (data) => {
     const groupedData = {};
@@ -60,9 +82,8 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
           .toString()
           .padStart(2, "0")}`;
       }
-
       if (!groupedData[key]) {
-        groupedData[key] = { date: key, [yKey]: 0 };
+        groupedData[key] = { ...item, date: key, [yKey]: 0 };
       }
       groupedData[key][yKey] += item[yKey];
     });
@@ -98,7 +119,7 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
       className="chart"
       ref={chartRef}
       data={data(chartData, yKey)}
-      options={options(events, chartData, yKey, min, max, activeLineY, setActiveLineY, activeLineYVal, setActiveLineYVal)}
+      options={options(events, chartData, min, max, activeLineY, setActiveLineY, activeLineYVal, setActiveLineYVal, tradingViewChart)}
       plugins={plugins}
     />
   );

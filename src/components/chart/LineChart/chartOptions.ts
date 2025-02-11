@@ -74,25 +74,17 @@ export   const options = (events, chartData, tradingViewChart, activeLineY, setA
 					},
 					footer: (tooltipData) => {
 						let data = chartData[tooltipData[0].dataIndex]
-						
 
 						if(data && !data['share amount']) {
 							data = chartData[tooltipData[0].dataIndex + 1]
-							const date = new Date(data["date"]);
-							const month = date.getUTCMonth();
-							const day = date.getUTCDate();
-							const year = date.getUTCFullYear();
-	
-							return `${month}/${day}/${year}`;
-						} else {
-							const date = new Date(data["date"]);
-							const month = date.getUTCMonth();
-							const day = date.getUTCDate();
-							const year = date.getUTCFullYear();
-	
-							return `${month}/${day}/${year}`;
 						}
+
+						const date = new Date(data["date"]);
+						const month = date.getUTCMonth();
+						const day = date.getUTCDate();
+						const year = date.getUTCFullYear();
 	
+						return `${month}/${day}/${year}`;
 					},
 				},
 				backgroundColor: "#146EB0",
@@ -141,8 +133,7 @@ export   const options = (events, chartData, tradingViewChart, activeLineY, setA
 					align: 'inner',
 					count: 11,
 					callback: (val: number) => {
-						return new Date(val).toLocaleDateString('en-GB', {
-								
+						return new Date(val).toLocaleDateString('en-GB', {	
 								month: "short",
 								year: "numeric"
 						});

@@ -3,3 +3,8 @@
 .chart{
 	aspect-ratio: 2.5/1;
 }
+
+
+.chartjs-tooltip{
+	z-index: 10000;
+}

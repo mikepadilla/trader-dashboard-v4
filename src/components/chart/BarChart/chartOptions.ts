@@ -1,5 +1,6 @@
 import { NewChartOptionBar } from "../../../types/types";
 
+
 const findMinMaxDay = (data): [number, number] => {  
 	if(data[0]) {
 	 let min: number = new Date(data[0]['date']).getTime();
@@ -18,7 +19,7 @@ const findMinMaxDay = (data): [number, number] => {
 	return [0, 0]
  }
 
-export const options = (events, chartData, yKey, min, max, activeLineY, setActiveLineY, activeLineYVal, setActiveLineYVal): NewChartOptionBar => {
+export const options = (events, chartData, min, max, activeLineY, setActiveLineY, activeLineYVal, setActiveLineYVal, tradingViewChart, ): NewChartOptionBar => {
 	return {
 			maintainAspectRatio: true,
 			aspectRatio: 2.75,     
@@ -32,26 +33,52 @@ export const options = (events, chartData, yKey, min, max, activeLineY, setActiv
 				},
 				tooltip: {
 					enabled: events ? true : false,
-					yAlign: "bottom",
+
 					callbacks: {
 						title: (tooltipData) => {
-							return `${chartData[tooltipData[0].dataIndex][
-								"ticker"
-							].toUpperCase()} $${chartData[tooltipData[0].dataIndex][
-								yKey
-							].toLocaleString("en-US")}`;
+							const data = chartData[tooltipData[0].dataIndex] 
+							if(data && !data['share amount']) {
+	
+								return `${data['daily buy sell'] < 0 ? 'SELL' : 'BUY'} ${tradingViewChart} ${
+									Intl.NumberFormat('en-US', 
+										{ style: 'currency', currency: 'USD', currencySign: 'standard' })
+										.format(data['daily buy sell'])}`;
+							
+							} else {
+								return `${data['trade'].toUpperCase()} ${data[
+									"ticker"
+								].toUpperCase()} $${data[
+									'cost basis'
+								].toLocaleString("en-US")}`;
+							}
 						},
 						label: (tooltipData) => {
-							return `${chartData[tooltipData.dataIndex]["shares"]} Shares ${
-								chartData[tooltipData.dataIndex]["cost basis"]
-							}`;
+							const data = chartData[tooltipData.dataIndex]
+
+							if(data && !data['share amount']) {
+								if(data.price) {
+									const shares = (data["daily buy sell"] / data['price']).toLocaleString('en-US')
+									return `${shares} Shares @ $${
+										data["price"].toLocaleString('en-US')
+									}`;
+								} else {
+									return `${0} Shares @ $${0}`;
+								}
+							} else {
+								const shares = data['shares'] 
+								return `${shares} Shares @ $${
+									data["share amount"].toLocaleString('en-US')
+								}`;
+							}
 						},
 						footer: (tooltipData) => {
-							const date = new Date(chartData[tooltipData[0].dataIndex]["date"]);
+							const data = chartData[tooltipData[0].dataIndex]
+	
+							const date = new Date(data["date"]);
 							const month = date.getUTCMonth();
 							const day = date.getUTCDate();
 							const year = date.getUTCFullYear();
-
+		
 							return `${month}/${day}/${year}`;
 						},
 					},
@@ -59,7 +86,7 @@ export const options = (events, chartData, yKey, min, max, activeLineY, setActiv
 					titleColor: "#fff",
 					bodyColor: "#fff",
 					titleFont: { weight: "bold" },
-					padding: 0,
+					padding: 10,
 					cornerRadius: 10,
 					borderWidth: 0,
 					displayColors: false,
@@ -127,7 +154,7 @@ export const options = (events, chartData, yKey, min, max, activeLineY, setActiv
 					ticks: {
 						color: "#146EB0",
 						callback: (value: number) => {
-							return Math.floor(value);
+							return Math.floor(value).toLocaleString('en-US');
 						},
 						font: {
 							size: 12,

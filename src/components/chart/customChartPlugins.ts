@@ -51,7 +51,7 @@ export const backgroundTicks = () => ({
 
 export const hoverLine = () => ({
   id: 'hoverLine',
-  afterDraw: (chart) => {
+  afterDatasetsDraw: (chart) => {
     const activeLineY = chart.options.plugins.customPlugin.activeLineY;
     const { ctx, chartArea, scales: { y } } = chart;
 
@@ -68,7 +68,8 @@ export const hoverLine = () => ({
       ctx.stroke();
       ctx.restore();
     }
-  } 
+  } ,
+	z: 1
 });
 
 
