@@ -12,6 +12,11 @@ export const data = (chartData, yKey, pointEvents, pointColors) => {
 				pointHitRadius: pointEvents,
 				pointBackgroundColor: pointColors,
 				pointBorderColor: "transparent",     
+				fill: {
+					target: 'origin',
+					above: 'rgba(0, 200,0, 0.2)',
+					below: 'rgba(200, 0,0 , 0.2)',
+				}
 			},
 		]
 	};

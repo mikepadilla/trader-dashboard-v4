@@ -14,7 +14,6 @@ import { Line } from "react-chartjs-2";
 import { useChartStore } from "../../../zustand/chartStore";
 import {
   backgroundTicks,
-  drawColorsFill,
   DrawColorsLine,
   drawZeroLine,
   hoverLine,
@@ -92,7 +91,6 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
     leaveEventPlugin(),
     drawZeroLine,
     DrawColorsLine,
-    drawColorsFill
   ];
  
   return (
