@@ -1,0 +1,107 @@
+import {
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  Title,
+  Tooltip,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+);
+
+import { useEffect, useRef, useState } from "react";
+import { Bar } from "react-chartjs-2";
+
+import { useChartStore } from "../../../zustand/chartStore";
+import { backgroundTicks, drawZeroLine, hoverLine, leaveEventPlugin } from "../customChartPlugins";
+import "../style.css";
+import { data } from "./chartData";
+import { options } from "./chartOptions";
+
+const BarChart = ({ chartDataProp, yKey, events }) => {
+  const [activeLineY, setActiveLineY] = useState(null);
+  const [activeLineYVal, setActiveLineYVal] = useState(null);
+  const [chartData, setChartData] = useState(chartDataProp);
+
+  const chartType = useChartStore((state) => state.chartType);
+  const chartRef = useRef();
+  
+  useEffect(() => {
+    findMinMax(chartData, yKey);
+  }, []);
+
+  useEffect(() => {
+    setChartData(resetData(chartDataProp));
+  }, [chartType, chartDataProp]);
+
+  const resetData = (data) => {
+    const groupedData = {};
+
+    data.forEach((item) => {
+      const date = new Date(item["date"]);
+
+      let key;
+      if (chartType === "daily") {
+        key = date.toISOString().split("T")[0];
+      } else if (chartType === "weekly") {
+        const startOfWeek = new Date(date);
+        startOfWeek.setDate(date.getDate() - date.getDay());
+        key = startOfWeek.toISOString().split("T")[0];
+      } else if (chartType === "monthly") {
+        key = `${date.getFullYear()}-${(date.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}`;
+      }
+
+      if (!groupedData[key]) {
+        groupedData[key] = { date: key, [yKey]: 0 };
+      }
+      groupedData[key][yKey] += item[yKey];
+    });
+
+    return Object.values(groupedData);
+  };
+
+  const findMinMax = (data, ticker) => {
+    if (data.length < 1) {
+      return [0, 0];
+    }
+
+    let max = data[0][ticker];
+    let min = data[0][ticker]
+
+    for (let i = 0; i < data.length; i++) {
+      if (min > data[i][ticker] ) {
+        min = data[i][ticker];
+      }
+      if (max < data[i][ticker]) {
+        max = data[i][ticker];
+      }
+    }
+
+    return [min, max];
+  };
+
+  const [min, max] = findMinMax(chartData, yKey);
+  const plugins = [hoverLine(), backgroundTicks(), leaveEventPlugin(), drawZeroLine];
+
+  return (
+    <Bar
+      className="chart"
+      ref={chartRef}
+      data={data(chartData, yKey)}
+      options={options(events, chartData, yKey, min, max, activeLineY, setActiveLineY, activeLineYVal, setActiveLineYVal)}
+      plugins={plugins}
+    />
+  );
+};
+
+export default BarChart;
