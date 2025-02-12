@@ -19,7 +19,24 @@ const findMinMaxDay = (data): [number, number] => {
 	return [0, 0]
  }
 
-export const options = (events, chartData, min, max, activeLineY, setActiveLineY, activeLineYVal, setActiveLineYVal, tradingViewChart, ): NewChartOptionBar => {
+
+ const someFunc = (chartData, basisChartData) => {
+	const arr = []
+
+	let j = 0
+
+	for (let i = 0; i < chartData.length; i++) {
+		if(chartData[i]['daily buy sell'] !== 0) {
+			arr.push(basisChartData[j])
+			j++
+		} else {
+			arr.push(0)
+		}
+	}
+	return arr
+ }
+
+export const options = (events, chartData, min, max, activeLineY, setActiveLineY, activeLineYVal, setActiveLineYVal, tradingViewChart, basisChartData): NewChartOptionBar => {
 	return {
 			maintainAspectRatio: true,
 			aspectRatio: 2.75,     
@@ -54,7 +71,8 @@ export const options = (events, chartData, min, max, activeLineY, setActiveLineY
 						},
 						label: (tooltipData) => {
 							const data = chartData[tooltipData.dataIndex]
-
+							const eventData = someFunc(chartData, basisChartData)[tooltipData.dataIndex]
+							
 							if(data && !data['share amount']) {
 								if(data.price) {
 									const shares = (data["daily buy sell"] / data['price']).toLocaleString('en-US')
@@ -62,7 +80,12 @@ export const options = (events, chartData, min, max, activeLineY, setActiveLineY
 										data["price"].toLocaleString('en-US')
 									}`;
 								} else {
-									return `${0} Shares @ $${0}`;
+									if(eventData != 0){
+										const shares = (eventData['shares'] ).toLocaleString('en-US')
+										return `${shares} Shares @ $${
+											eventData["share amount"].toLocaleString('en-US')
+										}`;
+									}
 								}
 							} else {
 								const shares = data['shares'] 

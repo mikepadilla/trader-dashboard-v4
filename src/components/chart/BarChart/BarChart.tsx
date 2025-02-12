@@ -33,6 +33,7 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
 
 
   const tradingViewChart = useChartStore((store) => store.tradingViewChart);
+  const basisChartData = useChartStore((store) => store.basisChartData);
   
 
   const chartType = useChartStore((state) => state.chartType);
@@ -119,7 +120,7 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
       className="chart"
       ref={chartRef}
       data={data(chartData, yKey)}
-      options={options(events, chartData, min, max, activeLineY, setActiveLineY, activeLineYVal, setActiveLineYVal, tradingViewChart)}
+      options={options(events, chartData, min, max, activeLineY, setActiveLineY, activeLineYVal, setActiveLineYVal, tradingViewChart, basisChartData)}
       plugins={plugins}
     />
   );
