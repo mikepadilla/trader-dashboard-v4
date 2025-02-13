@@ -106,7 +106,7 @@ export const options = (events, chartData, min, max, activeLineY, setActiveLineY
 							const data = chartData[tooltipData[0].dataIndex]
 	
 							const date = new Date(data["date"]);
-							const month = date.getUTCMonth();
+							const month = date.getUTCMonth() + 1;
 							const day = date.getUTCDate();
 							const year = date.getUTCFullYear();
 		

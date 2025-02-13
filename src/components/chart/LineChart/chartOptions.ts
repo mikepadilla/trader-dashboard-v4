@@ -80,7 +80,7 @@ export   const options = (events, chartData, tradingViewChart, activeLineY, setA
 						}
 
 						const date = new Date(data["date"]);
-						const month = date.getUTCMonth();
+						const month = date.getUTCMonth() + 1;
 						const day = date.getUTCDate();
 						const year = date.getUTCFullYear();
 	
