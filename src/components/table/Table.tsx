@@ -55,11 +55,11 @@ const Table = ({ tableData, tableId }) => {
       !(tableData[0]["Change%"] == "" || tableData[0]["Change%"]) &&
       !(tableData[0]["CHANGE %"] == "" || tableData[0]["CHANGE %"])
     ) {
-      setSortConfig({
-        key: Object.keys(tableData[0])[2],
+        setSortConfig({
+        key: Object.keys(tableData[0])[5],
         direction: "desc",
       });
-      sortData(Object.keys(tableData[0])[2]);
+      sortData(Object.keys(tableData[0])[5]);
     }
   }, []);
 
