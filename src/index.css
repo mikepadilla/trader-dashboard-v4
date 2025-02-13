@@ -115,8 +115,15 @@ body{
   position: relative;
   overflow: hidden;
   background-color: #dddbdd13;
+  animation: pulse 1.5s infinite ease-in-out;
 }
 
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+}
+/*
 .skeleton-box::after {
 	content: '';
 	position: absolute;
@@ -131,6 +138,7 @@ body{
 	animation: shimmer 1s infinite;
 	z-index: 100;
 }
+*/
 
 
 @keyframes shimmer {
