@@ -37,8 +37,10 @@ function TradingViewChart() {
         "interval": "D",
         "timezone": "Etc/UTC",
         "theme": "dark",
-        "style": "1",
+        "style": "2",
+        "range": "24M",
         "locale": "en",
+        "backgroundColor": "rgba(5, 19, 33, 1)",
         "allow_symbol_change": true,
         "calendar": false,
         "support_host": "https://www.tradingview.com"
