@@ -19,7 +19,7 @@ import { NewChartOptionLine } from "../../../types/types";
 	 return [0, 0]
 	}
 
-export   const options = (events, chartData, tradingViewChart, activeLineY, setActiveLineY, activeLineYVal, setActiveLineYVal, min, max): NewChartOptionLine => {
+export   const options = (events, chartData, tradingViewChart, activeLineY, setActiveLineY, activeLineYVal, setActiveLineYVal, min, max, activeChart): NewChartOptionLine => {
 	return {
 		maintainAspectRatio: true,
 		aspectRatio: 2.75,
@@ -142,7 +142,7 @@ export   const options = (events, chartData, tradingViewChart, activeLineY, setA
 			},
 			y: {
 				beginAtZero: true,
-				min: min - max / 100,
+				min: (activeChart && min >= 0) ? 0 : (min - max / 100),
 				max: max + max / 100,
 				grid: {
 					color: "#1F4C69",

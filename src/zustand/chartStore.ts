@@ -9,7 +9,8 @@ const initialChartData: IInitialChartData = {
 	basisChartData: [],
 	chartType: 'cumulative',
 	tradingViewChart: 'AAPL',
-	activeChart: 0
+	activeChart: 0,
+	isBasisActive: false
 }
 
 
@@ -46,6 +47,11 @@ export const useChartStore = create(
 			setActiveChart: (activeChart: number) => {
 				set(() => ({
 					activeChart
+				}))
+			},
+			setIsBasisActive: (isBasisActive: boolean) => {
+				set(() => ({
+					isBasisActive
 				}))
 			}
 		})

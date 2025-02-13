@@ -15,6 +15,7 @@ const ChartTab: FC<rightTabProps> = ({ tabData }) => {
   const chartType = useChartStore((state) => state.chartType)
   const setChartType = useChartStore((state) => state.setChartType)
   const activeChart = useChartStore((state) => state.activeChart)
+  const setIsBasisActive = useChartStore((state) => state.setIsBasisActive)
 
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
   const [isPeriodActive, setIsPeriodActive] = useState(true);
@@ -30,7 +31,7 @@ const ChartTab: FC<rightTabProps> = ({ tabData }) => {
             {tabData[3].title}
           </button>
         ) : (
-          tabData.map((item, i) => {
+          tabData.map((item, i: number) => {
             if (activeTabIndex == i) {
               return (
                 <button className="tab__button tab__button_active" key={i}>
@@ -47,6 +48,7 @@ const ChartTab: FC<rightTabProps> = ({ tabData }) => {
                     setIsPeriodActive(false);
                     setChartType("cumulative");
                     setActiveTabIndex(i);
+                    setIsBasisActive(i == 2 ? true : false)
                   }}
                 >
                   {item.title}
@@ -62,6 +64,7 @@ const ChartTab: FC<rightTabProps> = ({ tabData }) => {
                   setIsPeriodActive(true);
                   setChartType("cumulative");
                   setActiveTabIndex(i);
+                  setIsBasisActive(false)
                 }}
               >
                 {item.title}

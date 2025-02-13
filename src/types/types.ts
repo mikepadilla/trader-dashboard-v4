@@ -14,7 +14,8 @@ export type IInitialChartData = {
 	basisChartData: IBasisChartData[],
 	chartType: activeChartType,
 	tradingViewChart: string,
-	activeChart: number
+	activeChart: number,
+	isBasisActive: boolean
 }
 
 

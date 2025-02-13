@@ -44,11 +44,14 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
 
   const [chartData, setChartData] = useState(chartDataProp);
 
+
+
   useEffect(() => {
     setChartData(chartDataProp);
   });
 
   const tradingViewChart = useChartStore(store => store.tradingViewChart)
+  const isBasisActive = useChartStore(store => store.isBasisActive)
 
   useEffect(() => {
     if(events) {
@@ -98,7 +101,7 @@ const LineChart = ({ min, max, chartDataProp, yKey, events }) => {
       className="chart"
       ref={chartRef}
       data={data(chartData, yKey, pointEvents, pointColors)}
-      options={options(events, chartData, tradingViewChart, activeLineY, setActiveLineY, activeLineYVal, setActiveLineYVal, min, max)}
+      options={options(events, chartData, tradingViewChart, activeLineY, setActiveLineY, activeLineYVal, setActiveLineYVal, min, max, isBasisActive)}
       plugins={plugins}
     />
   );
