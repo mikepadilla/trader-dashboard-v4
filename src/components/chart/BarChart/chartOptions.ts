@@ -36,7 +36,7 @@ const findMinMaxDay = (data): [number, number] => {
 	return arr
  }
 
-export const options = (events, chartData, min, max, activeLineY, setActiveLineY, activeLineYVal, setActiveLineYVal, tradingViewChart, basisChartData): NewChartOptionBar => {
+export const options = (events, chartData, min, max, activeLineY, setActiveLineY, activeLineYVal, setActiveLineYVal, tradingViewChart, basisChartData, yKey): NewChartOptionBar => {
 	return {
 			maintainAspectRatio: true,
 			aspectRatio: 2.75,     
@@ -54,6 +54,11 @@ export const options = (events, chartData, min, max, activeLineY, setActiveLineY
 					callbacks: {
 						title: (tooltipData) => {
 							const data = chartData[tooltipData[0].dataIndex] 
+							if(yKey == 'daily performance') {
+								return `${Intl.NumberFormat('en-US', 
+									{ style: 'currency', currency: 'USD', currencySign: 'standard' })
+									.format(data['daily performance'])}`;
+							}
 							if(data && !data['share amount']) {
 	
 								return `${data['daily buy sell'] < 0 ? 'SELL' : 'BUY'} ${tradingViewChart} ${
@@ -72,7 +77,10 @@ export const options = (events, chartData, min, max, activeLineY, setActiveLineY
 						label: (tooltipData) => {
 							const data = chartData[tooltipData.dataIndex]
 							const eventData = someFunc(chartData, basisChartData)[tooltipData.dataIndex]
-							
+							if(data['amzn'] || yKey == 'daily performance') {
+								return null
+							}
+							console.log(data)
 							if(data && !data['share amount']) {
 								if(data.price) {
 									const shares = (data["daily buy sell"] / data['price']).toLocaleString('en-US')

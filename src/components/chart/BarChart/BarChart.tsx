@@ -65,9 +65,8 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
       } 
     }, [chartDataProp])
 
-  const resetData = (data) => {
+  const resetData = (data, ticker = yKey) => {
     const groupedData = {};
-
     data.forEach((item) => {
       const date = new Date(item["date"]);
 
@@ -84,9 +83,35 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
           .padStart(2, "0")}`;
       }
       if (!groupedData[key]) {
-        groupedData[key] = { ...item, date: key, [yKey]: 0 };
+        groupedData[key] = { ...item, date: key, [ticker]: 0 };
       }
-      groupedData[key][yKey] += item[yKey];
+      groupedData[key][ticker] += item[ticker] ? item[ticker] : 0;
+
+    });
+
+    return Object.values(groupedData);
+  };
+
+
+  const restoreBasisData = (data) => {
+    const groupedData = {};
+    data.forEach((item) => {
+      const date = new Date(item["date"]);
+
+      const key = date.toISOString().split("T")[0];
+
+      if (!groupedData[key]) {
+        groupedData[key] = { ...item};
+      }
+      for(const objKey in item) { 
+        if(typeof item[objKey] == 'number'){
+          groupedData[key][objKey] += item[objKey] ? item[objKey] : 0;
+        } else {
+          groupedData[key][objKey] = item[objKey] ? item[objKey] : 0;
+        }
+      }
+      
+
     });
 
     return Object.values(groupedData);
@@ -115,12 +140,13 @@ const BarChart = ({ chartDataProp, yKey, events }) => {
   const [min, max] = findMinMax(chartData, yKey);
   const plugins = [hoverLine(), backgroundTicks(), leaveEventPlugin(), drawZeroLine];
 
+
   return (
     <Bar
       className="chart"
       ref={chartRef}
       data={data(chartData, yKey)}
-      options={options(events, chartData, min, max, activeLineY, setActiveLineY, activeLineYVal, setActiveLineYVal, tradingViewChart, basisChartData)}
+      options={options(events, chartData, min, max, activeLineY, setActiveLineY, activeLineYVal, setActiveLineYVal, tradingViewChart, restoreBasisData(basisChartData), yKey)}
       plugins={plugins}
     />
   );
