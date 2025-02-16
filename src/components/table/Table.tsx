@@ -1,4 +1,4 @@
-// JavaScript Documentimport { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useChartStore } from "../../zustand/chartStore";
 import { useNewsStore } from "../../zustand/newsStore";
 import { useTableStore } from "../../zustand/store";
