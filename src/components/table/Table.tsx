@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+// JavaScript Documentimport { useEffect, useState } from "react";
 import { useChartStore } from "../../zustand/chartStore";
 import { useNewsStore } from "../../zustand/newsStore";
 import { useTableStore } from "../../zustand/store";
@@ -63,24 +63,16 @@ const Table = ({ tableData, tableId }) => {
     }
   }, []);
 
-const onTableRowClick = (item, index) => {
-  if (isTopTable(item)) {
-    if (index === 0) {
-      // If the first row in the top table is clicked
-      setNews(item.TICKER);
-      setTradingViewChart(item.TICKER);
-    } else {
-      // If any other row in the top table is clicked
+  const onTableRowClick = (item, index) => {
+    if (isTopTable(item)) {
       setChartData(item.Ticker);
       setTradingViewChart(item.Ticker);
       setNews(item.Ticker);
       setBasisChartData(item.Ticker);
+    } else {
+      setNews(item.TICKER);
+      setTradingViewChart(item.TICKER);
     }
-  } else {
-    // If a row in the bottom table is clicked
-    setNews(item.TICKER);
-    setTradingViewChart(item.TICKER);
-  }
 
     setActiveTableRow(`${tableId}-${index}`);
     if (tableId == "top") {
