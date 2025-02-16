@@ -63,16 +63,24 @@ const Table = ({ tableData, tableId }) => {
     }
   }, []);
 
-  const onTableRowClick = (item, index) => {
-    if (isTopTable(item)) {
+const onTableRowClick = (item, index) => {
+  if (isTopTable(item)) {
+    if (index === 0) {
+      // If the first row in the top table is clicked
+      setNews(item.TICKER);
+      setTradingViewChart(item.TICKER);
+    } else {
+      // If any other row in the top table is clicked
       setChartData(item.Ticker);
       setTradingViewChart(item.Ticker);
       setNews(item.Ticker);
       setBasisChartData(item.Ticker);
-    } else {
-      setNews(item.TICKER);
-      setTradingViewChart(item.TICKER);
     }
+  } else {
+    // If a row in the bottom table is clicked
+    setNews(item.TICKER);
+    setTradingViewChart(item.TICKER);
+  }
 
     setActiveTableRow(`${tableId}-${index}`);
     if (tableId == "top") {
